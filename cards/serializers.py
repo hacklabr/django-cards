@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from django.conf import settings
-from rest_framework import filters
 from rest_framework import serializers
-from .models import Authors, Card, Like, YoutubeEmbed, Image
+from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
 from drf_writable_nested import WritableNestedModelSerializer
-import sys
-from pprint import pprint
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
+
+class AudienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Audience
+        fields = '__all__'
+
+class AxisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Axis
+        fields = '__all__'
 
 class AuthorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Authors
         fields = ('pk', 'author_name', 'author_description')
-
 
 class ImageGallerySerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,13 +40,18 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
         model = YoutubeEmbed
         fields =('pk', 'url')
 
-class CardSerializer(WritableNestedModelSerializer):
+class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
 
-    authors = AuthorsSerializer(many=True, allow_null=True)
+    audience = AudienceSerializer(required=False)
+    authors = AuthorsSerializer(many=True, required=False)
+    axis = AxisSerializer(required=False)
+    image_gallery = ImageGallerySerializer(many=True, required=False)
+    likes = serializers.SerializerMethodField()
+    tags = TagListSerializerField(required=False)
+    youtube_embeds = YoutubeEmbedSerializer(many=True, required=False)
 
-    image_gallery = ImageGallerySerializer(many=True, allow_null=True)
-
-    youtube_embeds = YoutubeEmbedSerializer(many=True, allow_null=True)
+    def get_likes(self, obj):
+        return obj.like_set.count()
 
     class Meta:
         model = Card
@@ -47,12 +59,16 @@ class CardSerializer(WritableNestedModelSerializer):
                   'audience',
                   'author',
                   'authors',
+                  'axis',
                   'development',
                   'hint',
                   'image_gallery',
                   'is_certified',
                   'know_more',
+                  'likes',
+                  'tags',
                   'text',
                   'title',
                   'youtube_embeds',
                   'you_will_need')
+
