@@ -11,6 +11,7 @@ router.register(r'likes', views.LikeViewSet)
 router.register(r'youtube_embeds', views.YoutubeEmbedViewSet)
 
 urlpatterns = {
+    url(r'^$', views.cards_view, name='cards'),
+    url(r'(?P<slug>[-a-zA-Z0-9_]+)$', views.card_detail_view, name='cards-detail'),
     url(r'^api/', include(router.urls)),
-
 }

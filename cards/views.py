@@ -51,3 +51,11 @@ class YoutubeEmbedViewSet(viewsets.ModelViewSet):
     model = YoutubeEmbed
     queryset = YoutubeEmbed.objects.all()
     serializer_class = YoutubeEmbedSerializer
+
+
+def cards_view(request):
+    return render(request, 'cards.html', {})
+
+
+def card_detail_view(request, *args, **kwargs):
+    return render(request, 'card-detail.html', {})
