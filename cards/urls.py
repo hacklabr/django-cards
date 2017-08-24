@@ -6,7 +6,7 @@ from . import views
 
 router = routers.SimpleRouter(trailing_slash=False)
 
-router.register(r'cards', views.CardViewSet, base_name='Card')
+router.register(r'', views.CardViewSet, base_name='Card')
 router.register(r'likes', views.LikeViewSet)
 router.register(r'youtube_embeds', views.YoutubeEmbedViewSet)
 
