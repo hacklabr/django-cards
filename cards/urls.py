@@ -6,12 +6,11 @@ from . import views
 
 router = routers.SimpleRouter(trailing_slash=False)
 
-router.register(r'', views.CardViewSet, base_name='Card')
-router.register(r'likes', views.LikeViewSet)
-router.register(r'youtube_embeds', views.YoutubeEmbedViewSet)
+router.register(r'cards', views.CardViewSet, base_name='cards')
+router.register(r'youtube_embeds', views.YoutubeEmbedViewSet, base_name='youtube_embeds')
+router.register(r'likes', views.LikeViewSet, base_name='likes')
 
 urlpatterns = {
-    url(r'^$', views.cards_view, name='cards'),
-    url(r'(?P<slug>[-a-zA-Z0-9_]+)$', views.card_detail_view, name='cards-detail'),
+    url(r'^$', views.cards_view, name='cards_page'),
     url(r'^api/', include(router.urls)),
 }
