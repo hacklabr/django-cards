@@ -41,7 +41,6 @@ class Card(models.Model):
     hint = models.TextField(verbose_name=_('Hints'), blank=True)
     is_certified = models.BooleanField(verbose_name=_('Card was certified'), default=False)
     know_more = models.TextField(verbose_name=_('Know More About'), blank=True)
-    # tags = TagField(blank=True, null=True, force_lowercase=True, initial="eating, coding, gaming")
     tags = TaggableManager(blank=True)
     text = models.TextField(verbose_name=_('Text'), blank=True)
     title = models.CharField(verbose_name=_('Title'), max_length=255)
@@ -49,9 +48,6 @@ class Card(models.Model):
 
     def __unicode__(self):
         return u'%s - %s' % (self.title, self.audience)
-
-# class CardAdminGroups(models.Model):
-
 
 class Image(models.Model):
     '''

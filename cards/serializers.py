@@ -34,7 +34,6 @@ class LikeSerializer(serializers.ModelSerializer):
 class YoutubeEmbedSerializer(serializers.ModelSerializer):
 
     url = serializers.CharField()
-    # card = CardSerializer()
 
     class Meta:
         model = YoutubeEmbed
