@@ -71,3 +71,7 @@ class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
                   'youtube_embeds',
                   'you_will_need')
 
+
+class TagsInCardsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    slug = serializers.CharField()

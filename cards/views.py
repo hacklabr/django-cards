@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters
 from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
-from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageGallerySerializer, YoutubeEmbedSerializer
+from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageGallerySerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
     model = Audience
@@ -47,6 +47,17 @@ class LikeViewSet(viewsets.ModelViewSet):
     model = Like
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+
+class TagsViewSet(viewsets.ModelViewSet):
+    # def list(self, request):
+    #     queryset = Card.tags.all().names()
+    #     serializer = TagsInCardsSerializer(data=queryset, many=True)
+    #     return None
+    queryset = Card.tags.all()
+    serializer_class = TagsInCardsSerializer
+
+    # model = Card
+
 
 class YoutubeEmbedViewSet(viewsets.ModelViewSet):
 
