@@ -1,13 +1,22 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters
-from .models import Card, Image, Like, YoutubeEmbed
-from .serializers import CardSerializer, LikeSerializer, ImageGallerySerializer, YoutubeEmbedSerializer
+from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
+from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageGallerySerializer, YoutubeEmbedSerializer
+
+class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
+    model = Audience
+    queryset = Audience.objects.all()
+    serializer_class = AudienceSerializer
+
+class AxisViewSet(viewsets.ReadOnlyModelViewSet):
+    model = Axis
+    queryset = Axis.objects.all()
+    serializer_class = AxisSerializer
 
 class CardViewSet(viewsets.ModelViewSet):
 
     model = Card
     serializer_class = CardSerializer
-    permission_classes = (permissions.AllowAny,)
 
     filter_backends = ( filters.DjangoFilterBackend, filters.SearchFilter)
     filter_fields = ('axis__name', 'is_certified', 'tags__name')
@@ -22,8 +31,10 @@ class CardViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Certified cards are available for everyone
-        queryset = Card.objects.filter(is_certified=True)
+        # queryset = Card.objects.filter(is_certified=True)
+        queryset = Card.objects.all()
         # NON certified cards are only available for users in the same Contract
+        # sooo....
         return queryset
 
 class ImageGalleryViewSet(viewsets.ModelViewSet):
