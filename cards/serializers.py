@@ -10,7 +10,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('id', 'username', 'first_name', 'last_name')
+        fields = ('id', 'username', 'first_name', 'last_name', 'biography', 'occupation', 'city')
 
 class AudienceSerializer(serializers.ModelSerializer):
     class Meta:
