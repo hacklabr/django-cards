@@ -19,7 +19,10 @@ class CardViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
 
     filter_backends = ( filters.DjangoFilterBackend, filters.SearchFilter)
-    filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name')
+    filter_fields = {'audience__name': 'exact',
+                     'axis__name': 'exact',
+                     'is_certified': 'exact',
+                     'tags__name': 'in'}
     search_fields = (
                      'development',
                      'hint',
