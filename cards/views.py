@@ -74,5 +74,13 @@ def cards_view(request):
     return render(request, 'cards.html', {})
 
 
+def cards_list_view(request):
+    return render(request, 'cards-list.html', {})
+
+
+def card_new_view(request):
+    return render(request, 'card-new.html', {})
+
+
 def card_detail_view(request, *args, **kwargs):
     return render(request, 'card-detail.html', {})
