@@ -2,9 +2,15 @@
 from __future__ import print_function
 from rest_framework import serializers
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
+from django.contrib.auth import get_user_model
 from drf_writable_nested import WritableNestedModelSerializer
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username', 'first_name', 'last_name')
 
 class AudienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,6 +48,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
 class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
 
     audience = AudienceSerializer(required=False)
+    author = AuthorSerializer(required=False)
     authors = AuthorsSerializer(many=True, required=False)
     axis = AxisSerializer(required=False)
     image_gallery = ImageGallerySerializer(many=True, required=False)
