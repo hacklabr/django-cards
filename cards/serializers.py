@@ -7,10 +7,16 @@ from drf_writable_nested import WritableNestedModelSerializer
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = ('id', 'username', 'first_name', 'last_name', 'biography', 'occupation', 'city')
+from accounts.serializers import TimtecUserSerializer
+
+
+class BaseUserSerializer(TimtecUserSerializer):
+    pass
+
+# class AuthorSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = get_user_model()
+#         fields = ('id', 'username', 'first_name', 'last_name', 'biography', 'occupation', 'city')
 
 class AudienceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,7 +54,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
 class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
 
     audience = AudienceSerializer(required=False)
-    author = AuthorSerializer(required=False)
+    author = BaseUserSerializer(required=False, read_only=True)
     authors = AuthorsSerializer(many=True, required=False)
     axis = AxisSerializer(required=False)
     image_gallery = ImageGallerySerializer(many=True, required=False)
@@ -77,6 +83,10 @@ class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
                   'title',
                   'youtube_embeds',
                   'you_will_need')
+
+    # def create(self, validated_data):
+    #     validated_data['author'] = self.request.user
+    #     super(CardSerializer, self).create(validated_data)
 
 
 class TagsInCardsSerializer(serializers.Serializer):

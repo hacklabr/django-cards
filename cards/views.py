@@ -3,6 +3,8 @@ from rest_framework import viewsets, permissions, filters
 from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
 from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageGallerySerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
     model = Audience
@@ -29,6 +31,12 @@ class CardViewSet(viewsets.ModelViewSet):
                      'text',
                      'title',
                      'you_will_need')
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(author=self.request.user)
 
 
     def get_queryset(self):
