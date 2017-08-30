@@ -3,8 +3,6 @@ from rest_framework import viewsets, permissions, filters
 from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
 from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageGallerySerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 from django.contrib.auth import get_user_model
-from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
     model = Audience
@@ -38,15 +36,13 @@ class CardViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         serializer.save(author=self.request.user)
 
-
     def get_queryset(self):
         # Certified cards are available for everyone
-        # queryset = Card.objects.filter(is_certified=True)
-        queryset = Card.objects.all()
+        queryset = Card.objects.filter(is_certified=True)
         # NON certified cards are only available for users in the same Contract
         galera = get_user_model().objects.filter(groups__contracts__groups__in=self.request.user.groups.all())
-        queryset2 = Card.objects.filter(author__in = galera, is_certified = False)
-        return queryset |  queryset2
+        queryset2 = Card.objects.filter(author__in=galera, is_certified = False)
+        return queryset | queryset2
 
 class ImageGalleryViewSet(viewsets.ModelViewSet):
 

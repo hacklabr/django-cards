@@ -2,7 +2,7 @@
 from __future__ import print_function
 from rest_framework import serializers
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from drf_writable_nested import WritableNestedModelSerializer
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
