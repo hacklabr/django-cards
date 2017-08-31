@@ -10,6 +10,7 @@ router.register(r'audience', views.AudienceViewSet, base_name='audience')
 router.register(r'axis', views.AxisViewSet, base_name='axis')
 router.register(r'cards', views.CardViewSet, base_name='cards')
 router.register(r'tags', views.TagsViewSet, base_name='tags')
+router.register(r'image', views.ImageViewSet, base_name='image')
 router.register(r'youtube_embeds', views.YoutubeEmbedViewSet, base_name='youtube_embeds')
 router.register(r'likes', views.LikeViewSet, base_name='likes')
 

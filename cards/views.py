@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters
 from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
-from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageGallerySerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
+from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 from django.contrib.auth import get_user_model
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,11 +44,11 @@ class CardViewSet(viewsets.ModelViewSet):
         queryset2 = Card.objects.filter(author__in=galera, is_certified = False)
         return queryset | queryset2
 
-class ImageGalleryViewSet(viewsets.ModelViewSet):
+class ImageViewSet(viewsets.ModelViewSet):
 
     model = Image
     queryset = Image.objects.all()
-    serializer_class = ImageGallerySerializer
+    serializer_class = ImageSerializer
 
 class LikeViewSet(viewsets.ModelViewSet):
     model = Like

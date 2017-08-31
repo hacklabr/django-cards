@@ -31,7 +31,7 @@ class AuthorsSerializer(serializers.ModelSerializer):
         fields = ('pk', 'author_name', 'author_description')
 
 
-class ImageGallerySerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ('pk', 'image', 'description')
@@ -58,7 +58,7 @@ class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
     author = BaseUserSerializer(required=False, read_only=True)
     authors = AuthorsSerializer(many=True, required=False)
     axis = AxisSerializer(required=False)
-    image_gallery = ImageGallerySerializer(many=True, required=False)
+    image_gallery = ImageSerializer(many=True, required=False)
     likes = serializers.SerializerMethodField()
     tags = TagListSerializerField(required=False)
     youtube_embeds = YoutubeEmbedSerializer(many=True, required=False)
