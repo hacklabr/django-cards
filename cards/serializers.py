@@ -13,35 +13,36 @@ from accounts.serializers import TimtecUserSerializer
 class BaseUserSerializer(TimtecUserSerializer):
     pass
 
-# class AuthorSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = get_user_model()
-#         fields = ('id', 'username', 'first_name', 'last_name', 'biography', 'occupation', 'city')
 
 class AudienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Audience
         fields = '__all__'
 
+
 class AxisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Axis
         fields = '__all__'
+
 
 class AuthorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Authors
         fields = ('pk', 'author_name', 'author_description')
 
+
 class ImageGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ('pk', 'image', 'description')
 
+
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ('pk', 'user', 'card', 'created')
+
 
 class YoutubeEmbedSerializer(serializers.ModelSerializer):
 
@@ -50,6 +51,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
     class Meta:
         model = YoutubeEmbed
         fields =('pk', 'url')
+
 
 class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
 
