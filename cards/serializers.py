@@ -2,7 +2,6 @@
 from __future__ import print_function
 from rest_framework import serializers
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
-# from django.contrib.auth import get_user_model
 from drf_writable_nested import WritableNestedModelSerializer
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
@@ -85,10 +84,6 @@ class CardSerializer(TaggitSerializer, WritableNestedModelSerializer):
                   'title',
                   'youtube_embeds',
                   'you_will_need')
-
-    # def create(self, validated_data):
-    #     validated_data['author'] = self.request.user
-    #     super(CardSerializer, self).create(validated_data)
 
 
 class TagsInCardsSerializer(serializers.Serializer):
