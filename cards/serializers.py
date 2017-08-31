@@ -137,52 +137,56 @@ class CardSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         from pprint import pprint
-        pprint(instance)
+        print('\n\n\n==== INITIAL DATA')
+        pprint(self.initial_data)
+        print('\n\n\nVALIDATED DATA\n\n\n')
+        pprint(validated_data)
+        print('\n\n\n')
         # Content fields
-        instance.development = self.validated_data.get('development', '')
-        instance.hint = self.validated_data.get('hint', '')
-        instance.is_certified = self.validated_data.get('is_certified', '')
-        instance.know_more = self.validated_data.get('know_more', '')
-        instance.text = self.validated_data.get('text', '')
-        instance.title = self.validated_data.get('title', '')
-        instance.you_will_need = self.validated_data.get('you_will_need', '')
+        instance.development = self.initial_data.get('development', '')
+        instance.hint = self.initial_data.get('hint', '')
+        instance.is_certified = self.initial_data.get('is_certified', '')
+        instance.know_more = self.initial_data.get('know_more', '')
+        instance.text = self.initial_data.get('text', '')
+        instance.title = self.initial_data.get('title', '')
+        instance.you_will_need = self.initial_data.get('you_will_need', '')
 
         # Clean current fields and repopulate if they need to be changed
         if instance.axis:
             instance.axis.clear()
-        if 'axis' in self.validated_data.keys():
-            axis = self.validated_data.pop('axis')
+        if 'axis' in self.initial_data.keys():
+            axis = self.initial_data.pop('axis')
             instance.axis = Axis.objects.get(id=axis['id'])
 
         if instance.audience:
             instance.audience.clear()
-        if 'audience' in self.validated_data.keys():
-            audience = self.validated_data.pop('audience')
+        if 'audience' in self.initial_data.keys():
+            audience = self.initial_data.pop('audience')
             instance.audience = Audience.objects.get(id=audience['id'])
 
         if instance.authors:
             instance.authors.clear()
-        if 'authors' in self.validated_data.keys():
-            authors = self.validated_data.pop('authors')
+        if 'authors' in self.initial_data.keys():
+            authors = self.initial_data.pop('authors')
             for dude in authors:
                 instance.authors.add(Authors.objects.get(id=authors['id']))
 
         if instance.image_gallery:
             instance.image_gallery.clear()
-        if 'image_gallery' in self.validated_data.keys():
-            image_gallery = self.validated_data.pop('image_gallery')
+        if 'image_gallery' in self.initial_data.keys():
+            image_gallery = self.initial_data.pop('image_gallery')
             for image in image_gallery:
                 instance.image_gallery.add(Image.objects.get(id=image['id']))
 
         instance.tags.clear()
-        if 'tags' in self.validated_data.keys():
-            tags = self.validated_data.pop('tags')
+        if 'tags' in self.initial_data.keys():
+            tags = self.initial_data.pop('tags')
             instance.tags.add(*tags)
 
         if instance.youtube_embeds:
             instance.youtube_embeds.clear()
-        if 'youtube_embeds' in self.validated_data.keys():
-            youtube_embeds = self.validated_data.pop('youtube_embeds')
+        if 'youtube_embeds' in self.initial_data.keys():
+            youtube_embeds = self.initial_data.pop('youtube_embeds')
             for embed in youtube_embeds:
                 instance.youtube_embeds.add(YoutubeEmbed.objects.get(id=embed['id']))
 
