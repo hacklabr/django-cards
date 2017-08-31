@@ -18,6 +18,11 @@
             {'update': {method: 'PUT'}});
     }]);
 
+    app.factory('Images', ['$resource', function($resource){
+        return $resource('/cards/api/images/:id',
+            {'id': '@id'});
+    }]);
+
     app.factory('Likes', ['$resource', function($resource){
         return $resource('/cards/api/likes/:id',
             {'id': '@id'});
