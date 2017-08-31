@@ -4,53 +4,76 @@
 
     app.controller('CardsListCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
         function ($scope, $routeParams, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
+
             /* Services bindings */
             $scope.audiences = Audiences.query();
-            $scope.cards = Cards.query();
+            $scope.cards = {};
+            $scope.cards.all = Cards.query();
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
 
             $scope.show_filter_options = false;
             $scope.keyword = '';
-            $scope.selected_audience = '';
-            $scope.selected_axis = '';
-            $scope.selected_status = '';
-            $scope.selected_tags = [];
-
-            $scope.last_searched = '';
+            $scope.filter = {};
+            $scope.filter.keyword = '';
+            $scope.filter.audience = '';
+            $scope.filter.axis = '';
+            $scope.filter.status = '';
+            $scope.filter.tags = [];
 
             function filter_by_status () {
-                $scope.certified_cards = $scope.cards.slice(0).
+                $scope.cards.certified = $scope.cards.all.slice(0).
                     filter(function (elem) {
                         return elem.is_certified;
                     });
-                $scope.unattached_cards = $scope.cards.slice(0).
+                $scope.cards.community = $scope.cards.all.slice(0).
                     filter(function (elem) {
                         return !elem.is_certified;
                     });
             }
 
-            $scope.filtered_query = function () {             
+            $scope.blank_filters = true;
+
+            $scope.query = function () {
+                $scope.filter.keyword = $scope.keyword;
+                console.log($scope.filter.axis);
+                $scope.blank_filters =
+                    $scope.filter.keyword === '' &&
+                    $scope.filter.audience === '' &&
+                    $scope.filter.axis === '' &&
+                    $scope.filter.status === '' &&
+                    $scope.filter.tags.length === 0;
                 Cards.query({
-                    audience__name: $scope.selected_audience,
-                    axis__name: $scope.selected_axis,
-                    is_certified: $scope.selected_status,
-                    search: $scope.keyword,
-                    tags__name: $scope.selected_tags
+                    audience__name: $scope.filter.audience,
+                    axis__name: $scope.filter.axis,
+                    is_certified: $scope.filter.status,
+                    search: $scope.filter.keyword,
+                    tags__name: $scope.filter.tags
                 }).$promise.then(function (data) {
-                    console.log(data);
-                    $scope.cards = data;
+                    $scope.cards.all = data;
                     filter_by_status();
                 });
             }
 
-            $scope.search_keyword = function() {
-                $scope.last_searched = $scope.keyword;
-                $scope.cards = Cards.query({search: $scope.keyword});
-                $scope.cards.$promise.then(filter_by_status);
+            /* Tags */
+            $scope.tag = '';
+            $scope.insert_tag = function (tag) {
+                if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
+                    $scope.filter.tags.push(tag);
+                    $scope.query();
+                }
+                $scope.tag = '';                
+            }
+            $scope.remove_tag = function (index) {
+                $scope.filter.tags.splice(index, 1);
+                $scope.query();
             }
 
-            $scope.cards.$promise.then(filter_by_status);          
+            $scope.cards.all.$promise.then(filter_by_status);    
+            
+            $scope.$watchCollection('filter', function(newVal, oldVal) {
+                $scope.query();
+            });
         }
     ]);
 

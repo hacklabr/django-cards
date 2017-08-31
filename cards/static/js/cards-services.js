@@ -14,7 +14,8 @@
 
     app.factory('Cards', ['$resource', function($resource){
         return $resource('/cards/api/cards/:id',
-             {'id': '@id'});
+            {'id': '@id'},
+            {'update': {method: 'PUT'}});
     }]);
 
     app.factory('Likes', ['$resource', function($resource){
