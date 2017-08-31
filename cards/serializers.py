@@ -26,7 +26,7 @@ class AxisSerializer(serializers.ModelSerializer):
 class AuthorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Authors
-        fields = ('pk', 'author_name', 'author_description')
+        fields = '__all__'
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -54,7 +54,7 @@ class CardSerializer(serializers.ModelSerializer):
 
     audience = serializers.SerializerMethodField()
     author = BaseUserSerializer(required=False, read_only=True)
-    authors = serializers.SerializerMethodField()
+    authors = serializers.SerializerMethodField('get_several_authors')
     # authors = AuthorsSerializer(many=True, required=False)
     axis = serializers.SerializerMethodField()
     image_gallery = serializers.SerializerMethodField()
@@ -69,8 +69,8 @@ class CardSerializer(serializers.ModelSerializer):
     def get_audience(self, obj):
         return AudienceSerializer(instance=obj.audience, **{'context': self.context}).data
 
-    def get_authors(self, obj):
-        return AuthorsSerializer(instance=obj.authors, **{'context': self.context}).data
+    def get_several_authors(self, obj):
+        return AuthorsSerializer(instance=obj.authors, many=True, **{'context': self.context}).data
 
     def get_image_gallery(self, obj):
         return ImageSerializer(instance=obj.image_gallery, many=True, **{'context': self.context}).data
