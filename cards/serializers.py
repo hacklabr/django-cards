@@ -57,6 +57,7 @@ class CardSerializer(serializers.ModelSerializer):
     authors = serializers.SerializerMethodField('get_several_authors')
     # authors = AuthorsSerializer(many=True, required=False)
     axis = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
     image_gallery = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
@@ -68,6 +69,9 @@ class CardSerializer(serializers.ModelSerializer):
 
     def get_audience(self, obj):
         return AudienceSerializer(instance=obj.audience, **{'context': self.context}).data
+
+    def get_editable(self, obj):
+        return True
 
     def get_several_authors(self, obj):
         return AuthorsSerializer(instance=obj.authors, many=True, **{'context': self.context}).data
@@ -92,6 +96,7 @@ class CardSerializer(serializers.ModelSerializer):
                   'authors',
                   'axis',
                   'development',
+                  'editable',
                   'hint',
                   'image_gallery',
                   'is_certified',
