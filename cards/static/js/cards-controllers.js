@@ -36,7 +36,6 @@
 
             $scope.query = function () {
                 $scope.filter.keyword = $scope.keyword;
-                console.log($scope.filter.axis);
                 $scope.blank_filters =
                     $scope.filter.keyword === '' &&
                     $scope.filter.audience === '' &&
@@ -74,6 +73,27 @@
             $scope.$watchCollection('filter', function(newVal, oldVal) {
                 $scope.query();
             });
+
+            /*Cards.save({
+                audience: {
+                    id: 3
+                },
+                axis: {
+                    id: 2
+                },
+                author: {
+                    pk: 1022
+                },
+                is_certified: false,
+                tags: ['estações', 'outono'],
+                text: 'A estação da renovação!',
+                title: 'É assim que se curte o outono'
+                }).$promise.then(function (data) {
+                console.log(data);
+                console.log("Sucesso!");
+                }).catch(function (error) {
+                console.log(error);
+            });*/
         }
     ]);
 
@@ -81,6 +101,7 @@
         function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId; 
             $scope.card = Cards.get({id: $scope.card_id});
+            $scope.card.$promise.then(console.log($scope.card));
         }
     ]); 
 
