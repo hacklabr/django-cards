@@ -55,38 +55,40 @@ class CardSerializer(serializers.ModelSerializer):
     audience = serializers.SerializerMethodField()
     author = BaseUserSerializer(required=False, read_only=True)
     authors = serializers.SerializerMethodField('get_several_authors')
-    # authors = AuthorsSerializer(many=True, required=False)
     axis = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
     image_gallery = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
-    # youtube_embeds = YoutubeEmbedSerializer(many=True, required=False)
+    user_liked = serializers.SerializerMethodField()
     youtube_embeds = serializers.SerializerMethodField()
 
     def get_axis(self, obj):
-        return AxisSerializer(instance=obj.axis, **{'context': self.context}).data
+        return AxisSerializer(instance=obj.axis, allow_null=True, required=False, **{'context': self.context}).data
 
     def get_audience(self, obj):
-        return AudienceSerializer(instance=obj.audience, **{'context': self.context}).data
+        return AudienceSerializer(instance=obj.audience, allow_null=True, required=False, **{'context': self.context}).data
 
     def get_editable(self, obj):
         return True
 
     def get_several_authors(self, obj):
-        return AuthorsSerializer(instance=obj.authors, many=True, **{'context': self.context}).data
+        return AuthorsSerializer(instance=obj.authors,  allow_null=True, required=False, many=True, **{'context': self.context}).data
 
     def get_image_gallery(self, obj):
-        return ImageSerializer(instance=obj.image_gallery, many=True, **{'context': self.context}).data
+        return ImageSerializer(instance=obj.image_gallery,  allow_null=True, required=False, many=True, **{'context': self.context}).data
 
     def get_likes(self, obj):
         return obj.like_set.count()
 
     def get_tags(self, obj):
-        return TagsInCardsSerializer(instance=obj.tags, many=True, **{'context': self.context}).data
+        return TagsInCardsSerializer(instance=obj.tags,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+
+    def get_user_liked(self, obj):
+        return bool(obj.like_set.filter(user=self.context['request'].user))
 
     def get_youtube_embeds(self, obj):
-        return YoutubeEmbedSerializer(instance=obj.youtube_embeds, many=True, **{'context': self.context}).data
+        return YoutubeEmbedSerializer(instance=obj.youtube_embeds,  allow_null=True, required=False, many=True, **{'context': self.context}).data
 
     class Meta:
         model = Card
@@ -105,6 +107,7 @@ class CardSerializer(serializers.ModelSerializer):
                   'tags',
                   'text',
                   'title',
+                  'user_liked',
                   'youtube_embeds',
                   'you_will_need')
 
@@ -141,12 +144,7 @@ class CardSerializer(serializers.ModelSerializer):
         return card
 
     def update(self, instance, validated_data):
-        from pprint import pprint
-        print('\n\n\n==== INITIAL DATA')
-        pprint(self.initial_data)
-        print('\n\n\nVALIDATED DATA\n\n\n')
-        pprint(validated_data)
-        print('\n\n\n')
+
         # Content fields
         instance.development = self.initial_data.get('development', '')
         instance.hint = self.initial_data.get('hint', '')
@@ -166,7 +164,7 @@ class CardSerializer(serializers.ModelSerializer):
         if instance.audience:
             instance.audience.clear()
         if 'audience' in self.initial_data.keys():
-            audience = self.initial_data.pop('audience')
+            audience = self.initial_data['audience']
             instance.audience = Audience.objects.get(id=audience['id'])
 
         if instance.authors:
