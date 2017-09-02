@@ -32,7 +32,7 @@ class AuthorsSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ('pk', 'image', 'description')
+        fields = ('pk', 'image', 'description', 'user')
 
 
 class LikeSerializer(serializers.ModelSerializer):
