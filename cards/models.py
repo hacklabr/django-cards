@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-# from tagulous.models import TagField
 from taggit.managers import TaggableManager
 
 class Audience(models.Model):
@@ -56,6 +55,7 @@ class Image(models.Model):
     image = models.ImageField()
     description = models.TextField(_('Description'), blank=True)
     card = models.ForeignKey('Card', related_name='image_gallery', on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'), blank=True, null=True)
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
