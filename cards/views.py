@@ -1,8 +1,14 @@
+# coding=utf-8
 from django.shortcuts import render
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, filters, status
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
 from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
+
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
     model = Audience
@@ -34,7 +40,21 @@ class CardViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(author=self.request.user)
+        """
+        The big idea in this update:
+        - User can only update hers non-certified cards
+        - if User in admin_group, can edit anything
+        """
+        obj = self.get_object()
+        # I'm converting both lists to sets and asking if their intersection is non-empty
+        if bool(set(self.request.user.groups.all()) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+            # Although Card is being modified, original user remains
+            serializer.save(author=obj.author)
+        elif not obj.is_certified:
+            if obj.author == self.request.user:
+                serializer.save(author=self.request.user)
+        else:
+            raise PermissionDenied(detail=_('you do not have permission to alter this card'))
 
     def get_queryset(self):
         # Certified cards are available for everyone
@@ -50,10 +70,22 @@ class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
 class LikeViewSet(viewsets.ModelViewSet):
     model = Like
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
 
 class TagsViewSet(viewsets.ModelViewSet):
     # def list(self, request):
