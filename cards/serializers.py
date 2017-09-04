@@ -2,7 +2,7 @@
 from __future__ import print_function
 from rest_framework import serializers
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
-from drf_writable_nested import WritableNestedModelSerializer
+# from drf_writable_nested import WritableNestedModelSerializer
 
 from accounts.serializers import TimtecUserSerializer
 
@@ -30,12 +30,18 @@ class AuthorsSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+
+    user = BaseUserSerializer(read_only=True)
+
     class Meta:
         model = Image
         fields = ('pk', 'image', 'description', 'user')
 
 
 class LikeSerializer(serializers.ModelSerializer):
+
+    user = BaseUserSerializer(read_only=True)
+
     class Meta:
         model = Like
         fields = ('pk', 'user', 'card', 'created')
@@ -53,7 +59,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
 class CardSerializer(serializers.ModelSerializer):
 
     audience = serializers.SerializerMethodField()
-    author = BaseUserSerializer(required=False, read_only=True)
+    author = BaseUserSerializer(read_only=True)
     authors = serializers.SerializerMethodField('get_several_authors')
     axis = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
