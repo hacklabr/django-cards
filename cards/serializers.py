@@ -136,16 +136,20 @@ class CardSerializer(serializers.ModelSerializer):
         if 'audience' in self.initial_data.keys():
             audience = self.initial_data.pop('audience')
             card.audience = Audience.objects.get(id=audience['id'])
+            # card.audience.save()
+            # raise Exception('PARATUDO')
 
         if 'authors' in self.initial_data.keys():
             authors = self.initial_data.pop('authors')
             for dude in authors:
                 card.authors.add(Authors.get(id=dude['id']))
+            # card.authors.save()
 
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
             for image in image_gallery:
                 card.image_gallery.add(Image.objects.get(id=image['id']))
+            # card.image_gallery.save()
 
         if 'tags' in self.initial_data.keys():
             tags = self.initial_data.pop('tags')
@@ -156,6 +160,7 @@ class CardSerializer(serializers.ModelSerializer):
             for embed in youtube_embeds:
                 card.youtube_embeds.add(YoutubeEmbed.objects.get(id=embed['id']))
 
+        card.save()
         return card
 
     def update(self, instance, validated_data):
