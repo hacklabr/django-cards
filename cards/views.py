@@ -119,3 +119,6 @@ def card_new_view(request):
 
 def card_detail_view(request, *args, **kwargs):
     return render(request, 'card-detail.html', {})
+
+def card_edit_view(request, *args, **kwargs):
+    return render(request, 'card-edit.html', {})
