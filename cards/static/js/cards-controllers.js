@@ -52,7 +52,7 @@
                     $scope.cards.all = data;
                     filter_by_status();
                 });
-            }
+            };
 
             /* Tags */
             $scope.tag = '';
@@ -62,11 +62,11 @@
                     $scope.query();
                 }
                 $scope.tag = '';                
-            }
+            };
             $scope.remove_tag = function (index) {
                 $scope.filter.tags.splice(index, 1);
                 $scope.query();
-            }
+            };
 
             $scope.cards.all.$promise.then(filter_by_status);    
             
@@ -102,6 +102,23 @@
             $scope.card_id = $routeParams.cardId; 
             $scope.card = Cards.get({id: $scope.card_id});
             $scope.card.$promise.then(console.log($scope.card));
+            
+            // $scope.is_empty = function (obj){
+            //     return obj && Object.keys(obj).length === 0;
+            // };
+
+            $scope.like = function () {
+                Likes.save({card: $scope.card_id}).$promise.then(function(response) {
+                    $scope.card.user_liked = response.pk;
+                    $scope.card.likes += 1;
+                });
+            };
+            $scope.unlike = function () {
+                Likes.delete({id: $scope.card.user_liked}).$promise.then(function() {
+                    $scope.card.user_liked = null;
+                    $scope.card.likes -= 1;
+                });
+            };
         }
     ]); 
 
