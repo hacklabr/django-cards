@@ -56,6 +56,10 @@
 
             /* Tags */
             $scope.tag = '';
+            if ($routeParams.tag) {
+                $scope.filter.tags.push($routeParams.tag);
+                $scope.query();
+            } 
             $scope.insert_tag = function (tag) {
                 if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
                     $scope.filter.tags.push(tag);
@@ -73,27 +77,6 @@
             $scope.$watchCollection('filter', function(newVal, oldVal) {
                 $scope.query();
             });
-
-            /*Cards.save({
-                audience: {
-                    id: 3
-                },
-                axis: {
-                    id: 2
-                },
-                author: {
-                    pk: 1022
-                },
-                is_certified: false,
-                tags: ['estações', 'outono'],
-                text: 'A estação da renovação!',
-                title: 'É assim que se curte o outono'
-                }).$promise.then(function (data) {
-                console.log(data);
-                console.log("Sucesso!");
-                }).catch(function (error) {
-                console.log(error);
-            });*/
         }
     ]);
 
@@ -124,7 +107,23 @@
 
     app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Likes', 'YouTubeEmbeds',
         function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
-
+            // Cards.save({
+            //     audience: {
+            //         pk: 3
+            //     },
+            //     axis: {
+            //         pk: 2
+            //     },
+            //     is_certified: false,
+            //     tags: ['estações', 'outono'],
+            //     text: 'A estação da renovação!',
+            //     title: 'É assim que se curte o outono'
+            //     }).$promise.then(function (data) {
+            //     console.log(data);
+            //     console.log("Sucesso!");
+            //     }).catch(function (error) {
+            //     console.log(error);
+            // });
         }
     ]);
 
