@@ -46,10 +46,10 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = ('pk', 'user', 'card', 'created')
 
-class LikeSerializerButOnlyPk(serializers.ModelSerializer):
+class LikeSerializerButOnlyId(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ('pk',)
+        fields = ('id',)
 
 
 class YoutubeEmbedSerializer(serializers.ModelSerializer):
@@ -96,7 +96,11 @@ class CardSerializer(serializers.ModelSerializer):
         return TagsInCardsSerializer(instance=obj.tags,  allow_null=True, required=False, many=True, **{'context': self.context}).data
 
     def get_user_liked(self, obj):
-        return LikeSerializerButOnlyPk(instance=obj.like_set.filter(user=self.context['request'].user).first(), allow_null=True, required=False, **{'context': self.context}).data
+        like_object = obj.like_set.filter(user=self.context['request'].user).first()
+        if like_object:
+            return like_object.id
+        else:
+            return None
 
     def get_youtube_embeds(self, obj):
         return YoutubeEmbedSerializer(instance=obj.youtube_embeds,  allow_null=True, required=False, many=True, **{'context': self.context}).data
