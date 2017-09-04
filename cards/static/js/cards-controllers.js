@@ -52,48 +52,31 @@
                     $scope.cards.all = data;
                     filter_by_status();
                 });
-            }
+            };
 
             /* Tags */
             $scope.tag = '';
+            if ($routeParams.tag) {
+                $scope.filter.tags.push($routeParams.tag);
+                $scope.query();
+            } 
             $scope.insert_tag = function (tag) {
                 if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
                     $scope.filter.tags.push(tag);
                     $scope.query();
                 }
                 $scope.tag = '';                
-            }
+            };
             $scope.remove_tag = function (index) {
                 $scope.filter.tags.splice(index, 1);
                 $scope.query();
-            }
+            };
 
             $scope.cards.all.$promise.then(filter_by_status);    
             
             $scope.$watchCollection('filter', function(newVal, oldVal) {
                 $scope.query();
             });
-
-            /*Cards.save({
-                audience: {
-                    id: 3
-                },
-                axis: {
-                    id: 2
-                },
-                author: {
-                    pk: 1022
-                },
-                is_certified: false,
-                tags: ['estações', 'outono'],
-                text: 'A estação da renovação!',
-                title: 'É assim que se curte o outono'
-                }).$promise.then(function (data) {
-                console.log(data);
-                console.log("Sucesso!");
-                }).catch(function (error) {
-                console.log(error);
-            });*/
         }
     ]);
 
@@ -102,12 +85,45 @@
             $scope.card_id = $routeParams.cardId; 
             $scope.card = Cards.get({id: $scope.card_id});
             $scope.card.$promise.then(console.log($scope.card));
+            
+            // $scope.is_empty = function (obj){
+            //     return obj && Object.keys(obj).length === 0;
+            // };
+
+            $scope.like = function () {
+                Likes.save({card: $scope.card_id}).$promise.then(function(response) {
+                    $scope.card.user_liked = response.pk;
+                    $scope.card.likes += 1;
+                });
+            };
+            $scope.unlike = function () {
+                Likes.delete({id: $scope.card.user_liked}).$promise.then(function() {
+                    $scope.card.user_liked = null;
+                    $scope.card.likes -= 1;
+                });
+            };
         }
     ]); 
 
     app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Likes', 'YouTubeEmbeds',
         function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
-
+            // Cards.save({
+            //     audience: {
+            //         pk: 3
+            //     },
+            //     axis: {
+            //         pk: 2
+            //     },
+            //     is_certified: false,
+            //     tags: ['estações', 'outono'],
+            //     text: 'A estação da renovação!',
+            //     title: 'É assim que se curte o outono'
+            //     }).$promise.then(function (data) {
+            //     console.log(data);
+            //     console.log("Sucesso!");
+            //     }).catch(function (error) {
+            //     console.log(error);
+            // });
         }
     ]);
 
