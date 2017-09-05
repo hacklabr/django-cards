@@ -175,11 +175,11 @@ class CardSerializer(serializers.ModelSerializer):
         instance.you_will_need = self.initial_data.get('you_will_need', '')
 
         # Clean current fields and repopulate if they need to be changed
-        if instance.axis and 'axis' in self.initial_data.keys():
+        if 'axis' in self.initial_data.keys():
             axis = self.initial_data.pop('axis')
             instance.axis = Axis.objects.get(id=axis['id'])
 
-        if instance.audience and 'audience' in self.initial_data.keys():
+        if 'audience' in self.initial_data.keys():
             audience = self.initial_data['audience']
             instance.audience = Audience.objects.get(id=audience['id'])
 
