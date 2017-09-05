@@ -107,7 +107,11 @@
                 $scope.get_cards();
             };
 
-            $scope.cards.all.$promise.then(filter_by_status);    
+            $scope.cards.all.$promise.then(function () {
+                filter_by_status();
+                $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
+                $scope.slider.community = get_slides_row($scope.cards.community, 0);
+            });    
             
             $scope.$watchCollection('filter', function(newVal, oldVal) {
                 $scope.get_cards();
