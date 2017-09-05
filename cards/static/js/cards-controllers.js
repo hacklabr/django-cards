@@ -41,7 +41,7 @@
                 $scope.slider.certified = get_slides_row($scope.cards.certified, --$scope.certified_base_slide);  
             }
             $scope.certified_slides_up = function () {
-                $scope.slider.certified = get_slides_row($scope.cards.certified, +$scope.certified_base_slide);
+                $scope.slider.certified = get_slides_row($scope.cards.certified, ++$scope.certified_base_slide);
             }
             $scope.community_slides_down = function () {
                 $scope.slider.community = get_slides_row($scope.cards.community, --$scope.community_base_slide);
@@ -59,15 +59,13 @@
                     filter(function (elem) {
                         return !elem.is_certified;
                     });
-                $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
-                $scope.slider.community = get_slides_row($scope.cards.community, 0);
             }
 
             $scope.slider = {};          
 
             $scope.blank_filters = true;
 
-            $scope.query = function () {
+            $scope.get_cards = function () {
                 $scope.filter.keyword = $scope.keyword;
                 $scope.blank_filters =
                     $scope.filter.keyword === '' &&
@@ -84,6 +82,8 @@
                 }).$promise.then(function (data) {
                     $scope.cards.all = data;
                     filter_by_status();
+                    $scope.slider.certified_base_slide = 0;
+                    $scope.slice.community_base_slide = 0;
                     $scope.slider.certified = get_slides_row($scope.cards.certified, $scope.certified_base_slide);
                     $scope.slider.community = get_slides_row($scope.cards.community, $scope.community_base_slide); 
                 });
@@ -93,24 +93,24 @@
             $scope.tag = '';
             if ($routeParams.tag) {
                 $scope.filter.tags.push($routeParams.tag);
-                $scope.query();
+                $scope.get_cards();
             } 
             $scope.insert_tag = function (tag) {
                 if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
                     $scope.filter.tags.push(tag);
-                    $scope.query();
+                    $scope.get_cards();
                 }
                 $scope.tag = '';                
             };
             $scope.remove_tag = function (index) {
                 $scope.filter.tags.splice(index, 1);
-                $scope.query();
+                $scope.get_cards();
             };
 
             $scope.cards.all.$promise.then(filter_by_status);    
             
             $scope.$watchCollection('filter', function(newVal, oldVal) {
-                $scope.query();
+                $scope.get_cards();
             });
         }
     ]);
