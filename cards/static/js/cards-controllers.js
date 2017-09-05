@@ -61,7 +61,6 @@
                     });
                 $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
                 $scope.slider.community = get_slides_row($scope.cards.community, 0);
-                console.log($scope.slider.certified, $scope.slider.community);
             }
 
             $scope.slider = {};          
