@@ -61,6 +61,7 @@
                     });
                 $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
                 $scope.slider.community = get_slides_row($scope.cards.community, 0);
+                console.log($scope.slider.certified, $scope.slider.community);
             }
 
             $scope.slider = {};          
@@ -140,8 +141,8 @@
         }
     ]); 
 
-    app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Likes', 'YouTubeEmbeds',
-        function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
+    app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Images', 'Likes', 'YouTubeEmbeds',
+        function ($scope, $routeParams, $http, Cards, Images, Likes, YouTubeEmbeds) {
             // Cards.update({
             //     id: 76,
             //     audience: {
@@ -160,6 +161,16 @@
             //     }).catch(function (error) {
             //     console.log(error);
             // });
+
+            $scope.upload = function (file) {
+                if (file) {
+                    Images.upload(file, 'Teste').then(function (response) {
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            }
         }
     ]);
 
