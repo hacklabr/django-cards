@@ -21,6 +21,35 @@
             $scope.filter.status = '';
             $scope.filter.tags = [];
 
+            /* Because modulo operation is **very wrongly** defined in JS for negative numbers. */
+            function safe_mod (m, n) {
+                return ((m % n) + n) % n;
+            }
+
+            function get_slides_row (arr, start) {
+                if (arr.length < 3)
+                    return arr;
+                var new_row = [];
+                for (let i = 0; i < 3; i++)
+                    new_row[i] = arr[safe_mod(i + start, arr.length)];
+                return new_row;
+            }
+
+            $scope.certified_base_slide = 0;
+            $scope.community_base_slide = 0;
+            $scope.certified_slides_down = function () {
+                $scope.slider.certified = get_slides_row($scope.cards.certified, --$scope.certified_base_slide);  
+            }
+            $scope.certified_slides_up = function () {
+                $scope.slider.certified = get_slides_row($scope.cards.certified, +$scope.certified_base_slide);
+            }
+            $scope.community_slides_down = function () {
+                $scope.slider.community = get_slides_row($scope.cards.community, --$scope.community_base_slide);
+            }
+            $scope.community_slides_up = function () {
+                $scope.slider.community = get_slides_row($scope.cards.community, ++$scope.community_base_slide);
+            }
+
             function filter_by_status () {
                 $scope.cards.certified = $scope.cards.all.slice(0).
                     filter(function (elem) {
@@ -30,7 +59,11 @@
                     filter(function (elem) {
                         return !elem.is_certified;
                     });
+                $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
+                $scope.slider.community = get_slides_row($scope.cards.community, 0);
             }
+
+            $scope.slider = {};          
 
             $scope.blank_filters = true;
 
@@ -51,6 +84,8 @@
                 }).$promise.then(function (data) {
                     $scope.cards.all = data;
                     filter_by_status();
+                    $scope.slider.certified = get_slides_row($scope.cards.certified, $scope.certified_base_slide);
+                    $scope.slider.community = get_slides_row($scope.cards.community, $scope.community_base_slide); 
                 });
             };
 
@@ -107,17 +142,18 @@
 
     app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Likes', 'YouTubeEmbeds',
         function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
-            // Cards.save({
+            // Cards.update({
+            //     id: 76,
             //     audience: {
-            //         pk: 3
+            //         id: 2
             //     },
             //     axis: {
-            //         pk: 2
+            //         id: 3
             //     },
-            //     is_certified: false,
-            //     tags: ['estações', 'outono'],
+            //     is_certified: true,
+            //     tags: ['estações', 'outono', 'teste'],
             //     text: 'A estação da renovação!',
-            //     title: 'É assim que se curte o outono'
+            //     title: 'É assim que se curte o outono - teste por XHR (atualizado)'
             //     }).$promise.then(function (data) {
             //     console.log(data);
             //     console.log("Sucesso!");
