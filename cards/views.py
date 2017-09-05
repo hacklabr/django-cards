@@ -45,15 +45,20 @@ class CardViewSet(viewsets.ModelViewSet):
         - User can only update hers non-certified cards
         - if User in admin_group, can edit anything
         """
+        print('vai entrar no update')
         obj = self.get_object()
         # I'm converting both lists to sets and asking if their intersection is non-empty
-        if bool(set(self.request.user.groups.all()) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+        if bool(set([g.name for g in self.request.user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+            print('entrou no treco dos grupos')
             # Although Card is being modified, original user remains
             serializer.save(author=obj.author)
         elif not obj.is_certified:
+            print('objeto nao é certificado')
             if obj.author == self.request.user:
+                print('autor é self.request.user')
                 serializer.save(author=self.request.user)
         else:
+            print('beleza, raise exception')
             raise PermissionDenied(detail=_('you do not have permission to alter this card'))
 
     def get_queryset(self):
