@@ -143,9 +143,41 @@
         }
     ]); 
 
-    app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Images', 'Likes', 'YouTubeEmbeds',
-        function ($scope, $routeParams, $http, Cards, Images, Likes, YouTubeEmbeds) {
+    app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
+        function ($scope, $routeParams, $http, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
+            $scope.card = {is_certified: false};
+            $scope.card.audience = {};
+            $scope.card.axis = {};
             $scope.editing_mode = false;
+
+            $scope.audiences = Audiences.query();
+            $scope.axes = Axes.query();
+            $scope.tags = Tags.query();
+
+            $scope.tinymceOptions = TinymceOptions;
+
+            $scope.card.tags = [];
+            $scope.new_tag = function (new_tag) {
+                return {
+                    name: new_tag
+                };
+            };
+
+            $scope.card.authors = [];
+            $scope.add_author = function () {
+                $scope.card.authors.push({author_name: '', author_description: ''});
+            }
+
+            $scope.create_card = function () {
+                Cards.save($scope.card).$promise.then(function (response) {
+                    console.log(response);
+                    $scope.card = {is_certified: false};
+                }).catch(function(error) {
+                    console.log(error);
+                });
+            }
+
+
             // Cards.update({
             //     id: 76,
             //     audience: {
@@ -177,11 +209,15 @@
         }
     ]);
 
-    app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Images', 'Likes', 'YouTubeEmbeds',
-        function ($scope, $routeParams, $http, Cards, Images, Likes, YouTubeEmbeds) {
+    app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
+        function ($scope, $routeParams, $http, Audiences, Axes, Cards, Images, Likes, Tags, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
             $scope.card = Cards.get({id: $scope.card_id});
             $scope.editing_mode = true;
+
+            $scope.audiences = Audiences.query();
+            $scope.axes = Axes.query();
+            $scope.tags = Tags.query();
         }])
 
 })(window.angular);

@@ -46,6 +46,12 @@
             {'id': '@id'});
     }]);
 
+    app.factory('TinymceOptions', function(){
+        return {
+            toolbar: 'bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | quicklink link fullscreen | removeformat'
+        }
+    });
+
     app.factory('YouTubeEmbeds', ['$resource', function($resource){
         return $resource('/cards/api/youtube_embeds/:id',
             {'id': '@id'});
