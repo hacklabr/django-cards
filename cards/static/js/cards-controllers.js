@@ -145,6 +145,7 @@
 
     app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Images', 'Likes', 'YouTubeEmbeds',
         function ($scope, $routeParams, $http, Cards, Images, Likes, YouTubeEmbeds) {
+            $scope.editing_mode = false;
             // Cards.update({
             //     id: 76,
             //     audience: {
@@ -175,5 +176,12 @@
             }
         }
     ]);
+
+    app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Images', 'Likes', 'YouTubeEmbeds',
+        function ($scope, $routeParams, $http, Cards, Images, Likes, YouTubeEmbeds) {
+            $scope.card_id = $routeParams.cardId;
+            $scope.card = Cards.get({id: $scope.card_id});
+            $scope.editing_mode = true;
+        }])
 
 })(window.angular);
