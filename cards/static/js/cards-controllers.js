@@ -82,8 +82,8 @@
                 }).$promise.then(function (data) {
                     $scope.cards.all = data;
                     filter_by_status();
-                    $scope.slider.certified_base_slide = 0;
-                    $scope.slice.community_base_slide = 0;
+                    $scope.certified_base_slide = 0;
+                    $scope.community_base_slide = 0;
                     $scope.slider.certified = get_slides_row($scope.cards.certified, $scope.certified_base_slide);
                     $scope.slider.community = get_slides_row($scope.cards.community, $scope.community_base_slide); 
                 });
@@ -123,7 +123,6 @@
         function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId; 
             $scope.card = Cards.get({id: $scope.card_id});
-            $scope.card.$promise.then(console.log($scope.card));
             
             // $scope.is_empty = function (obj){
             //     return obj && Object.keys(obj).length === 0;
