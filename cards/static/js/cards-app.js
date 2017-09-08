@@ -20,6 +20,10 @@
                     templateUrl: '/cards/new/',
                     controller: 'NewCardCtrl',
                 }).
+                when('/:cardId/edit', {
+                    templateUrl: '/cards/new/',
+                    controller: 'EditCardCtrl'
+                }).
                 when('/:cardId', {
                     templateUrl: '/cards/detail/',
                     controller: 'CardDetailCtrl'

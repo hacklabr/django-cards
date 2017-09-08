@@ -18,9 +18,22 @@
             {'update': {method: 'PUT'}});
     }]);
 
-    app.factory('Images', ['$resource', function($resource){
-        return $resource('/cards/api/images/:id',
+    app.factory('Images', ['$resource', 'Upload', function($resource, Upload){
+        var img_file = $resource('/cards/api/images/:id',
             {'id': '@id'});
+
+        img_file.upload = function (file, description) {
+            return Upload.upload({
+                url: '/cards/api/images',
+                data: {
+                    name: file.name,
+                    image: file,
+                    description: description
+                },
+                arrayKey: '',
+            });
+        };
+        return img_file;
     }]);
 
     app.factory('Likes', ['$resource', function($resource){
