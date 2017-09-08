@@ -40,6 +40,7 @@ class Card(models.Model):
     hint = models.TextField(verbose_name=_('Hints'), blank=True)
     is_certified = models.BooleanField(verbose_name=_('Card was certified'), default=False)
     know_more = models.TextField(verbose_name=_('Know More About'), blank=True)
+    lead = models.CharField(verbose_name=_('Lead'), blank=True, max_length=255)
     tags = TaggableManager(blank=True)
     text = models.TextField(verbose_name=_('Text'), blank=True)
     title = models.CharField(verbose_name=_('Title'), max_length=255)

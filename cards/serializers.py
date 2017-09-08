@@ -119,6 +119,7 @@ class CardSerializer(serializers.ModelSerializer):
                   'is_certified',
                   'know_more',
                   'likes',
+                  'lead',
                   'tags',
                   'text',
                   'title',
