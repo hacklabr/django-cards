@@ -20,6 +20,13 @@ class Authors(models.Model):
     author_description = models.TextField(_('Author Description'), blank=True)
     card = models.ForeignKey('Card', related_name='authors', on_delete=models.SET_NULL, blank=True, null=True)
 
+    def __unicode__(self):
+        if self.card:
+            title = self.card.title
+        else:
+            title = None
+        return u'{} - {}'.format(self.author_name, title)
+
 class Axis(models.Model):
     '''
     This is a type of category that can be changed on admin interface.
