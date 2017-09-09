@@ -7,6 +7,9 @@
         'cards.services',
         'ngFileUpload',
         'ngRoute',
+        'ngSanitize',
+        'ui.select',
+        'ui.tinymce',
         'header',
         'django',
     ]);
