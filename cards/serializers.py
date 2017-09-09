@@ -141,11 +141,13 @@ class CardSerializer(serializers.ModelSerializer):
             # raise Exception('PARATUDO')
 
         if 'authors' in self.initial_data.keys():
-            # if card.authors
             authors = self.initial_data.pop('authors')
             for dude in authors:
-                card.authors.add(Authors.get(id=dude['id']))
-            # card.authors.save()
+                name = dude['author_name'] if dude['author_name'] else ''
+                description = dude['author_description'] if dude['author_description'] else ''
+                Authors.objects.create(author_name=name,
+                                    author_description=description,
+                                    card=instance)
 
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
