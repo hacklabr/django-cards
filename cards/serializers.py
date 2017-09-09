@@ -147,7 +147,7 @@ class CardSerializer(serializers.ModelSerializer):
                 description = dude['author_description'] if dude['author_description'] else ''
                 Authors.objects.create(author_name=name,
                                     author_description=description,
-                                    card=instance)
+                                    card=card)
 
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
