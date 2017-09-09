@@ -141,6 +141,7 @@ class CardSerializer(serializers.ModelSerializer):
             # raise Exception('PARATUDO')
 
         if 'authors' in self.initial_data.keys():
+            # if card.authors
             authors = self.initial_data.pop('authors')
             for dude in authors:
                 card.authors.add(Authors.get(id=dude['id']))
@@ -184,12 +185,19 @@ class CardSerializer(serializers.ModelSerializer):
             audience = self.initial_data['audience']
             instance.audience = Audience.objects.get(id=audience['id'])
 
-        if instance.authors:
-            instance.authors.clear()
         if 'authors' in self.initial_data.keys():
+            if instance.authors.all():
+                for autor in instance.authors.all():
+                    autor.delete()
             authors = self.initial_data.pop('authors')
             for dude in authors:
-                instance.authors.add(Authors.objects.get(id=authors['id']))
+                name = dude['author_name'] if dude['author_name'] else ''
+                description = dude['author_description'] if dude['author_description'] else ''
+                Authors.objects.create(author_name=name,
+                                    author_description=description,
+                                    card=instance
+                                    )
+                # instance.authors.add(Authors.objects.get(id=authors['id']))
 
         if instance.image_gallery:
             instance.image_gallery.clear()

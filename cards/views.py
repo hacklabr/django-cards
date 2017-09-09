@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
-from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
+from .models import Audience, Authors, Axis, Card, Image, Like, YoutubeEmbed
+from .serializers import AudienceSerializer, AuthorsSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +14,11 @@ class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
     model = Audience
     queryset = Audience.objects.all()
     serializer_class = AudienceSerializer
+
+# class AuthorsViewSet(viewsets.ModelViewSet):
+#     model = Authors
+#     queryset = Authors.objects.all()
+#     serializer_class = AuthorsSerializer
 
 class AxisViewSet(viewsets.ReadOnlyModelViewSet):
     model = Axis

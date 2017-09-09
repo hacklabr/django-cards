@@ -7,6 +7,7 @@ from . import views
 router = routers.SimpleRouter(trailing_slash=False)
 
 router.register(r'audience', views.AudienceViewSet, base_name='audience')
+# router.register(r'authors', views.AuthorsViewSet, base_name='authors')
 router.register(r'axis', views.AxisViewSet, base_name='axis')
 router.register(r'cards', views.CardViewSet, base_name='cards')
 router.register(r'tags', views.TagsViewSet, base_name='tags')
