@@ -174,6 +174,7 @@ class CardSerializer(serializers.ModelSerializer):
         instance.hint = self.initial_data.get('hint', '')
         instance.is_certified = self.initial_data.get('is_certified', '')
         instance.know_more = self.initial_data.get('know_more', '')
+        instance.lead = self.initial_data.get('lead', '')
         instance.text = self.initial_data.get('text', '')
         instance.title = self.initial_data.get('title', '')
         instance.you_will_need = self.initial_data.get('you_will_need', '')
