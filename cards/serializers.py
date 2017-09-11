@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 from rest_framework import serializers
+from django.conf import settings
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
 # from drf_writable_nested import WritableNestedModelSerializer
 
@@ -81,7 +82,16 @@ class CardSerializer(serializers.ModelSerializer):
         return AudienceSerializer(instance=obj.audience, allow_null=True, required=False, **{'context': self.context}).data
 
     def get_editable(self, obj):
-        return True
+        if not obj.is_certified:
+            if obj.author == self.context['request'].user:
+                return True
+
+        if obj.is_certified:
+            user = self.context['request'].user
+            if bool(set([g.name for g in user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+                return True
+
+        return False
 
     def get_several_authors(self, obj):
         return AuthorsSerializer(instance=obj.authors,  allow_null=True, required=False, many=True, **{'context': self.context}).data
