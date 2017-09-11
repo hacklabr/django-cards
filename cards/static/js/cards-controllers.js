@@ -123,10 +123,6 @@
         function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId; 
             $scope.card = Cards.get({id: $scope.card_id});
-            
-            // $scope.is_empty = function (obj){
-            //     return obj && Object.keys(obj).length === 0;
-            // };
 
             $scope.like = function () {
                 Likes.save({card: $scope.card_id}).$promise.then(function(response) {
@@ -139,6 +135,17 @@
                     $scope.card.user_liked = null;
                     $scope.card.likes -= 1;
                 });
+            };
+
+            $scope.delete_card = function () {
+                if ($scope.card.editable) {
+                    Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
+                        console.log(response);
+                        window.location.replace('#!/');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             };
         }
     ]); 
@@ -169,6 +176,9 @@
             }
 
             $scope.create_card = function () {
+                $scope.card.tags = $scope.card.tags.map(function (tag) {
+                    return tag.name;
+                });
                 Cards.save($scope.card).$promise.then(function (response) {
                     console.log(response);
                     $scope.card = {is_certified: false};
@@ -176,26 +186,6 @@
                     console.log(error);
                 });
             }
-
-
-            // Cards.update({
-            //     id: 76,
-            //     audience: {
-            //         id: 2
-            //     },
-            //     axis: {
-            //         id: 3
-            //     },
-            //     is_certified: true,
-            //     tags: ['estações', 'outono', 'teste'],
-            //     text: 'A estação da renovação!',
-            //     title: 'É assim que se curte o outono - teste por XHR (atualizado)'
-            //     }).$promise.then(function (data) {
-            //     console.log(data);
-            //     console.log("Sucesso!");
-            //     }).catch(function (error) {
-            //     console.log(error);
-            // });
 
             $scope.upload = function (file) {
                 if (file) {
@@ -205,7 +195,7 @@
                         console.log(error);
                     });
                 }
-            }
+            };
         }
     ]);
 
@@ -218,6 +208,33 @@
             $scope.audiences = Audiences.query();
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
-        }])
+
+            $scope.update_card = function () {
+                if ($scope.card.editable) {
+                    $scope.card.id = $scope.card_id;
+                    $scope.card.tags = $scope.card.tags.map(function (tag) {
+                        return tag.name;
+                    });
+                    console.log(JSON.stringify($scope.card, null, 4))
+                    Cards.update($scope.card).$promise.then(function (response) {
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            }
+
+            $scope.delete_card = function () {
+                if ($scope.card.editable) {
+                    Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
+                        console.log(response);
+                        window.location.replace('#!/');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            };
+        }
+    ]);
 
 })(window.angular);
