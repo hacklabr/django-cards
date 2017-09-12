@@ -68,6 +68,7 @@ class CardSerializer(serializers.ModelSerializer):
     author = BaseUserSerializer(read_only=True)
     authors = serializers.SerializerMethodField('get_several_authors')
     axis = serializers.SerializerMethodField()
+    certifiable = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
     image_gallery = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
@@ -80,6 +81,13 @@ class CardSerializer(serializers.ModelSerializer):
 
     def get_audience(self, obj):
         return AudienceSerializer(instance=obj.audience, allow_null=True, required=False, **{'context': self.context}).data
+
+    def get_certifiable(self, obj):
+        user = self.context['request'].user
+        if bool(set([g.name for g in user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+            return True
+        else:
+            return False
 
     def get_editable(self, obj):
         if not obj.is_certified:
@@ -122,6 +130,7 @@ class CardSerializer(serializers.ModelSerializer):
                   'author',
                   'authors',
                   'axis',
+                  'certifiable',
                   'development',
                   'editable',
                   'hint',
