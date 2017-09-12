@@ -55,11 +55,11 @@ class LikeSerializerButOnlyId(serializers.ModelSerializer):
 
 class YoutubeEmbedSerializer(serializers.ModelSerializer):
 
-    url = serializers.CharField()
+    video_id = serializers.CharField()
 
     class Meta:
         model = YoutubeEmbed
-        fields =('pk', 'url')
+        fields =('pk', 'video_id')
 
 
 class CardSerializer(serializers.ModelSerializer):

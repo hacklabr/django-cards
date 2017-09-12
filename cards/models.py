@@ -71,7 +71,7 @@ class Like(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
 class YoutubeEmbed(models.Model):
-    url = models.URLField(max_length=255)
+    video_id = models.CharField(max_length=255)
     card = models.ForeignKey('Card', related_name='youtube_embeds', on_delete=models.SET_NULL, blank=True, null=True)
 
 
