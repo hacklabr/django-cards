@@ -40,9 +40,9 @@ class Axis(models.Model):
         return u'%s' % (self.name)
 
 class Card(models.Model):
-    audience = models.ForeignKey('Audience', blank=True, null=True)
+    audience = models.ForeignKey('Audience')  # , blank=True, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), blank=True, null=True)
-    axis = models.ForeignKey('Axis', blank=True, null=True)
+    axis = models.ForeignKey('Axis')  # , blank=True, null=True)
     development = models.TextField(verbose_name=_('Development'), blank=True)
     hint = models.TextField(verbose_name=_('Hints'), blank=True)
     is_certified = models.BooleanField(verbose_name=_('Card was certified'), default=False)
