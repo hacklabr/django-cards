@@ -145,9 +145,10 @@ class CardSerializer(serializers.ModelSerializer):
                   'user_liked',
                   'youtube_embeds',
                   'you_will_need')
+        depth = 2
 
     def create(self, validated_data):
-        card = Card.objects.create(**validated_data)
+        card = Card(**validated_data)
 
         if 'axis' in self.initial_data.keys():
             axis = self.initial_data.pop('axis')
@@ -174,16 +175,17 @@ class CardSerializer(serializers.ModelSerializer):
                 card.image_gallery.add(Image.objects.get(id=image['id']))
             # card.image_gallery.save()
 
-        if 'tags' in self.initial_data.keys():
-            tags = self.initial_data.pop('tags')
-            card.tags.add(*tags)
-
+        # For dwelling with tags, we need the card object to be instantiated
         if 'youtube_embeds' in self.initial_data.keys():
             youtube_embeds = self.initial_data.pop('youtube_embeds')
             for embed in youtube_embeds:
                 card.youtube_embeds.add(YoutubeEmbed.objects.get(id=embed['id']))
 
         card.save()
+        if 'tags' in self.initial_data.keys():
+            tags = self.initial_data.pop('tags')
+            card.tags.add(*tags)
+
         return card
 
     def update(self, instance, validated_data):
