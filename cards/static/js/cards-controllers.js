@@ -187,8 +187,16 @@
                 });
             }
 
-            $scope.selected_image = null;
-            $scope.selected_image_index = -1;
+            function unselect_image() {
+                $scope.selected_image = null;
+                $scope.selected_image_index = -1;
+            };
+            function unselect_video() {
+                $scope.selected_video = null;
+                $scope.selected_video_index = -1;
+            };
+
+            unselect_image();
             $scope.upload_image = function (file) {
                 if (file) {
                     Images.upload(file, '').then(function (response) {
@@ -201,19 +209,18 @@
             $scope.select_image = function (index) {
                 $scope.selected_image = $scope.card.image_gallery[index];
                 $scope.selected_image_index = index;
+                unselect_video();
             };
             $scope.remove_image = function (index) {
                 Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
                     $scope.card.image_gallery.splice(index, 1);
-                    $scope.selected_image = null;
-                    $scope.selected_image_index = -1;
+                    unselect_image();
                 }).catch(function (error){
                     console.log(error);
                 });
             };
 
-            $scope.selected_video = null;
-            $scope.selected_video_index = -1;
+            unselect_video();
             $scope.embed_video = function () {
                 var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; 
                 var result = youtube_pattern.exec($scope.video_url);
@@ -231,12 +238,12 @@
             $scope.select_video = function (index) {
                 $scope.selected_video = $scope.card.youtube_embeds[index];
                 $scope.selected_video_index = index;
+                unselect_image();
             };
             $scope.remove_video = function (index) {
                 YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
                     $scope.card.youtube_embeds.splice(index, 1);
-                    $scope.selected_video = null;
-                    $scope.selected_video_index = -1;
+                    unselect_video();
                 }).catch(function (error) {
                     console.log(error);
                 });
