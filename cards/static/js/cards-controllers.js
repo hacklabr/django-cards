@@ -126,7 +126,7 @@
 
             $scope.like = function () {
                 Likes.save({card: $scope.card_id}).$promise.then(function(response) {
-                    $scope.card.user_liked = response.pk;
+                    $scope.card.user_liked = response.id;
                     $scope.card.likes += 1;
                 });
             };
@@ -140,7 +140,6 @@
             $scope.delete_card = function () {
                 if ($scope.card.editable) {
                     Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
-                        console.log(response);
                         window.location.replace('#!/');
                     }).catch(function (error) {
                         console.log(error);
@@ -182,8 +181,7 @@
                     return tag.name;
                 });
                 Cards.save($scope.card).$promise.then(function (response) {
-                    console.log(response);
-                    $scope.card = {is_certified: false};
+                    window.location.replace('#!/' + response.id);
                 }).catch(function(error) {
                     console.log(error);
                 });
@@ -205,15 +203,19 @@
                 $scope.selected_image_index = index;
             };
             $scope.remove_image = function (index) {
-                $scope.card.image_gallery.splice(index, 1);
-                $scope.selected_image = null;
-                $scope.selected_image_index = -1;
-            }
+                Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
+                    $scope.card.image_gallery.splice(index, 1);
+                    $scope.selected_image = null;
+                    $scope.selected_image_index = -1;
+                }).catch(function (error){
+                    console.log(error);
+                });
+            };
 
             $scope.selected_video = null;
-            $scope.selected_video_index = -1;         
+            $scope.selected_video_index = -1;
             $scope.embed_video = function () {
-                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;     
+                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; 
                 var result = youtube_pattern.exec($scope.video_url);
                 $scope.video_url = '';
                 var youtube_id;
@@ -231,10 +233,14 @@
                 $scope.selected_video_index = index;
             };
             $scope.remove_video = function (index) {
-                $scope.card.youtube_embeds.splice(index, 1);
-                $scope.selected_video = null;
-                $scope.selected_video_index = -1; 
-            }
+                YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
+                    $scope.card.youtube_embeds.splice(index, 1);
+                    $scope.selected_video = null;
+                    $scope.selected_video_index = -1;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            };
         }
     ]);
 
@@ -269,7 +275,6 @@
             $scope.delete_card = function () {
                 if ($scope.card.editable) {
                     Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
-                        console.log(response);
                         window.location.replace('#!/');
                     }).catch(function (error) {
                         console.log(error);
