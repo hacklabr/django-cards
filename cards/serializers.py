@@ -145,7 +145,6 @@ class CardSerializer(serializers.ModelSerializer):
                   'user_liked',
                   'youtube_embeds',
                   'you_will_need')
-        depth = 2
 
     def create(self, validated_data):
         card = Card(**validated_data)
