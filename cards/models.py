@@ -66,7 +66,7 @@ class Image(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'), blank=True, null=True)
 
     def __unicode__(self):
-        return '{} - Card {} - User {}'.format(self.image, self.card, self.user)
+        return u'{} - Card {} - User {}'.format(self.image, self.card, self.user)
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)

@@ -174,7 +174,8 @@ class CardSerializer(serializers.ModelSerializer):
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
             for image in image_gallery:
-                Image.objects.get(id=image['id']).card = card
+                card.image_gallery.add(Image.objects.get(id=image['id']))
+                # Image.objects.get(id=image['id']).card = card
 
         if 'tags' in self.initial_data.keys():
             tags = self.initial_data.pop('tags')
@@ -183,9 +184,11 @@ class CardSerializer(serializers.ModelSerializer):
         if 'youtube_embeds' in self.initial_data.keys():
             youtube_embeds = self.initial_data.pop('youtube_embeds')
             for embed in youtube_embeds:
-                YoutubeEmbed.objects.get(id=embed['id']).card = card
+                card.youtube_embeds.add(YoutubeEmbed.objects.get(id=embed['id']))
+                # YoutubeEmbed.objects.get(id=embed['id']).card = card
                 # card.youtube_embeds.add()
 
+        card.save()
         return card
 
     def update(self, instance, validated_data):
@@ -244,7 +247,6 @@ class CardSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
 
 
 class TagsInCardsSerializer(serializers.Serializer):
