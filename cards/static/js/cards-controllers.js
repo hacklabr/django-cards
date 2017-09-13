@@ -155,6 +155,8 @@
             $scope.card = {is_certified: false};
             $scope.card.audience = {};
             $scope.card.axis = {};
+            $scope.card.image_gallery = [];
+            $scope.card.youtube_embeds = [];
             $scope.editing_mode = false;
 
             $scope.audiences = Audiences.query();
@@ -187,15 +189,52 @@
                 });
             }
 
-            $scope.upload = function (file) {
+            $scope.selected_image = null;
+            $scope.selected_image_index = -1;
+            $scope.upload_image = function (file) {
                 if (file) {
-                    Images.upload(file, 'Teste').then(function (response) {
-                        console.log(response);
+                    Images.upload(file, '').then(function (response) {
+                        $scope.card.image_gallery.push(response.data);
                     }).catch(function (error) {
                         console.log(error);
                     });
                 }
             };
+            $scope.select_image = function (index) {
+                $scope.selected_image = $scope.card.image_gallery[index];
+                $scope.selected_image_index = index;
+            };
+            $scope.remove_image = function (index) {
+                $scope.card.image_gallery.splice(index, 1);
+                $scope.selected_image = null;
+                $scope.selected_image_index = -1;
+            }
+
+            $scope.selected_video = null;
+            $scope.selected_video_index = -1;         
+            $scope.embed_video = function () {
+                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;     
+                var result = youtube_pattern.exec($scope.video_url);
+                $scope.video_url = '';
+                var youtube_id;
+                if (result && result[2].length == 11){
+                    youtube_id = result[2];
+                }        
+                YouTubeEmbeds.save({video_id: youtube_id}).$promise.then(function (response) {
+                    $scope.card.youtube_embeds.push(response);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+            $scope.select_video = function (index) {
+                $scope.selected_video = $scope.card.youtube_embeds[index];
+                $scope.selected_video_index = index;
+            };
+            $scope.remove_video = function (index) {
+                $scope.card.youtube_embeds.splice(index, 1);
+                $scope.selected_video = null;
+                $scope.selected_video_index = -1; 
+            }
         }
     ]);
 
@@ -212,13 +251,16 @@
             $scope.update_card = function () {
                 if ($scope.card.editable) {
                     $scope.card.id = $scope.card_id;
+                    $scope.backup_tags = $scope.card.tags;
                     $scope.card.tags = $scope.card.tags.map(function (tag) {
                         return tag.name;
                     });
                     console.log(JSON.stringify($scope.card, null, 4))
                     Cards.update($scope.card).$promise.then(function (response) {
+                        $scope.card.tags = $scope.backup_tags;                       
                         console.log(response);
                     }).catch(function (error) {
+                        $scope.card.tags = $scope.backup_tags;
                         console.log(error);
                     });
                 }
@@ -234,6 +276,10 @@
                     });
                 }
             };
+
+            $scope.add_author = function () {
+                $scope.card.authors.push({author_name: '', author_description: ''});
+            }
         }
     ]);
 
