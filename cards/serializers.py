@@ -36,7 +36,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ('pk', 'image', 'description', 'user')
+        fields = ('id', 'image', 'description', 'user')
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -45,7 +45,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
-        fields = ('pk', 'user', 'card', 'created')
+        fields = ('id', 'user', 'card', 'created')
 
 class LikeSerializerButOnlyId(serializers.ModelSerializer):
     class Meta:
@@ -59,7 +59,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = YoutubeEmbed
-        fields =('pk', 'video_id')
+        fields =('id', 'video_id')
 
 
 class CardSerializer(serializers.ModelSerializer):
@@ -125,7 +125,7 @@ class CardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Card
-        fields = ('pk',
+        fields = ('id',
                   'audience',
                   'author',
                   'authors',
@@ -168,22 +168,23 @@ class CardSerializer(serializers.ModelSerializer):
                                     author_description=description,
                                     card=card)
 
+        # For dwelling with images (reverse foreign key), embeds (reverse foreign key) and tags (own package), we need
+        # the card object to be instantiated
+        card.save()
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
             for image in image_gallery:
-                card.image_gallery.add(Image.objects.get(id=image['id']))
-            # card.image_gallery.save()
+                Image.objects.get(id=image['id']).card = card
 
-        # For dwelling with tags, we need the card object to be instantiated
-        if 'youtube_embeds' in self.initial_data.keys():
-            youtube_embeds = self.initial_data.pop('youtube_embeds')
-            for embed in youtube_embeds:
-                card.youtube_embeds.add(YoutubeEmbed.objects.get(id=embed['id']))
-
-        card.save()
         if 'tags' in self.initial_data.keys():
             tags = self.initial_data.pop('tags')
             card.tags.add(*tags)
+
+        if 'youtube_embeds' in self.initial_data.keys():
+            youtube_embeds = self.initial_data.pop('youtube_embeds')
+            for embed in youtube_embeds:
+                YoutubeEmbed.objects.get(id=embed['id']).card = card
+                # card.youtube_embeds.add()
 
         return card
 

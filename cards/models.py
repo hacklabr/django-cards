@@ -54,7 +54,7 @@ class Card(models.Model):
     you_will_need = models.TextField(verbose_name=_('Requirements for this'), blank=True)
 
     def __unicode__(self):
-        return u'%s - %s' % (self.title, self.audience)
+        return u'%s' % (self.title)
 
 class Image(models.Model):
     '''
@@ -64,6 +64,9 @@ class Image(models.Model):
     description = models.TextField(_('Description'), blank=True)
     card = models.ForeignKey('Card', related_name='image_gallery', on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'), blank=True, null=True)
+
+    def __unicode__(self):
+        return '{} - Card {} - User {}'.format(self.image, self.card, self.user)
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
