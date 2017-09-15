@@ -192,15 +192,23 @@
                 $scope.card.authors.push({author_name: '', author_description: ''});
             }
 
+            function valid_card() {
+                var error = $scope.card.title && $scope.card.title != '' &&
+                $scope.card.audience && $scope.card.audience.id != '' &&
+                $scope.card.axis && $scope.card.axis.id != '';
+                return error;
+            }
             $scope.create_card = function () {
-                $scope.card.tags = $scope.card.tags.map(function (tag) {
-                    return tag.name;
-                });
-                Cards.save($scope.card).$promise.then(function (response) {
-                    window.location.replace('#!/' + response.id);
-                }).catch(function(error) {
-                    console.log(error);
-                });
+                if (valid_card()) {
+                    $scope.card.tags = $scope.card.tags.map(function (tag) {
+                        return tag.name;
+                    });
+                    Cards.save($scope.card).$promise.then(function (response) {
+                        window.location.replace('#!/' + response.id);
+                    }).catch(function(error) {
+                        console.log(error);
+                    });
+                }
             }
 
             function unselect_image() {
@@ -277,17 +285,21 @@
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
 
+            function valid_card() {
+                var error = $scope.card.title && $scope.card.title != '' &&
+                $scope.card.audience && $scope.card.audience.id != '' &&
+                $scope.card.axis && $scope.card.axis.id != '';
+                return error;
+            }
             $scope.update_card = function () {
-                if ($scope.card.editable) {
+                if ($scope.card.editable && valid_card()) {
                     $scope.card.id = $scope.card_id;
                     $scope.backup_tags = $scope.card.tags;
                     $scope.card.tags = $scope.card.tags.map(function (tag) {
                         return tag.name;
                     });
-                    console.log(JSON.stringify($scope.card, null, 4))
                     Cards.update($scope.card).$promise.then(function (response) {
-                        $scope.card.tags = $scope.backup_tags;                       
-                        console.log(response);
+                        window.location.replace('#!/' + $scope.card_id);
                     }).catch(function (error) {
                         $scope.card.tags = $scope.backup_tags;
                         console.log(error);
