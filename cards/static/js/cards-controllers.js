@@ -119,10 +119,20 @@
         }
     ]);
 
-    app.controller('CardDetailCtrl', ['$scope', '$routeParams', '$http', 'Cards', 'Likes', 'YouTubeEmbeds',
-        function ($scope, $routeParams, $http, Cards, Likes, YouTubeEmbeds) {
+    app.controller('CardDetailCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Cards', 'Likes',
+        function ($scope, $routeParams, $http, $sce, Cards, Likes) {
             $scope.card_id = $routeParams.cardId; 
-            $scope.card = Cards.get({id: $scope.card_id});
+            $scope.card;
+            Cards.get({id: $scope.card_id}).$promise.then(function (response) {
+                $scope.card = response;
+                var image_slides = $scope.card.image_gallery.map(function (img) {
+                    return {type: 'image', el: img};
+                });
+                var video_slides = $scope.card.youtube_embeds.map(function (video) {
+                    return {type: 'video', el: video};
+                });
+                $scope.slides = image_slides.concat(video_slides);
+            });
 
             $scope.like = function () {
                 Likes.save({card: $scope.card_id}).$promise.then(function(response) {
@@ -145,6 +155,12 @@
                         console.log(error);
                     });
                 }
+            };
+
+            /* Slider*/
+            $scope.active_slide = 0;
+            $scope.safe_url = function (url) {
+                return $sce.trustAsResourceUrl(url);
             };
         }
     ]); 
@@ -190,11 +206,117 @@
             function unselect_image() {
                 $scope.selected_image = null;
                 $scope.selected_image_index = -1;
-            };
+            }
             function unselect_video() {
                 $scope.selected_video = null;
                 $scope.selected_video_index = -1;
+            }
+
+            unselect_image();
+            $scope.upload_image = function (file) {
+                if (file) {
+                    Images.upload(file, '').then(function (response) {
+                        $scope.card.image_gallery.push(response.data);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             };
+            $scope.select_image = function (index) {
+                $scope.selected_image = $scope.card.image_gallery[index];
+                $scope.selected_image_index = index;
+                unselect_video();
+            };
+            $scope.remove_image = function (index) {
+                Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
+                    $scope.card.image_gallery.splice(index, 1);
+                    unselect_image();
+                }).catch(function (error){
+                    console.log(error);
+                });
+            };
+
+            unselect_video();
+            $scope.embed_video = function () {
+                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; 
+                var result = youtube_pattern.exec($scope.video_url);
+                $scope.video_url = '';
+                var youtube_id;
+                if (result && result[2].length == 11){
+                    youtube_id = result[2];
+                }
+                YouTubeEmbeds.save({video_id: youtube_id}).$promise.then(function (response) {
+                    $scope.card.youtube_embeds.push(response);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+            $scope.select_video = function (index) {
+                $scope.selected_video = $scope.card.youtube_embeds[index];
+                $scope.selected_video_index = index;
+                unselect_image();
+            };
+            $scope.remove_video = function (index) {
+                YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
+                    $scope.card.youtube_embeds.splice(index, 1);
+                    unselect_video();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            };
+        }
+    ]);
+
+    app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
+        function ($scope, $routeParams, $http, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
+            $scope.card_id = $routeParams.cardId;
+            $scope.card = Cards.get({id: $scope.card_id});
+            $scope.editing_mode = true;
+
+            $scope.audiences = Audiences.query();
+            $scope.axes = Axes.query();
+            $scope.tags = Tags.query();
+
+            $scope.update_card = function () {
+                if ($scope.card.editable) {
+                    $scope.card.id = $scope.card_id;
+                    $scope.backup_tags = $scope.card.tags;
+                    $scope.card.tags = $scope.card.tags.map(function (tag) {
+                        return tag.name;
+                    });
+                    console.log(JSON.stringify($scope.card, null, 4))
+                    Cards.update($scope.card).$promise.then(function (response) {
+                        $scope.card.tags = $scope.backup_tags;                       
+                        console.log(response);
+                    }).catch(function (error) {
+                        $scope.card.tags = $scope.backup_tags;
+                        console.log(error);
+                    });
+                }
+            }
+
+            $scope.delete_card = function () {
+                if ($scope.card.editable) {
+                    Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
+                        window.location.replace('#!/');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            };
+
+            $scope.add_author = function () {
+                $scope.card.authors.push({author_name: '', author_description: ''});
+            }
+
+            function unselect_image() {
+                $scope.selected_image = null;
+                $scope.selected_image_index = -1;
+            }
+            function unselect_video() {
+                $scope.selected_video = null;
+                $scope.selected_video_index = -1;
+            }
 
             unselect_image();
             $scope.upload_image = function (file) {
@@ -248,50 +370,6 @@
                     console.log(error);
                 });
             };
-        }
-    ]);
-
-    app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
-        function ($scope, $routeParams, $http, Audiences, Axes, Cards, Images, Likes, Tags, YouTubeEmbeds) {
-            $scope.card_id = $routeParams.cardId;
-            $scope.card = Cards.get({id: $scope.card_id});
-            $scope.editing_mode = true;
-
-            $scope.audiences = Audiences.query();
-            $scope.axes = Axes.query();
-            $scope.tags = Tags.query();
-
-            $scope.update_card = function () {
-                if ($scope.card.editable) {
-                    $scope.card.id = $scope.card_id;
-                    $scope.backup_tags = $scope.card.tags;
-                    $scope.card.tags = $scope.card.tags.map(function (tag) {
-                        return tag.name;
-                    });
-                    console.log(JSON.stringify($scope.card, null, 4))
-                    Cards.update($scope.card).$promise.then(function (response) {
-                        $scope.card.tags = $scope.backup_tags;                       
-                        console.log(response);
-                    }).catch(function (error) {
-                        $scope.card.tags = $scope.backup_tags;
-                        console.log(error);
-                    });
-                }
-            }
-
-            $scope.delete_card = function () {
-                if ($scope.card.editable) {
-                    Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
-                        window.location.replace('#!/');
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
-            };
-
-            $scope.add_author = function () {
-                $scope.card.authors.push({author_name: '', author_description: ''});
-            }
         }
     ]);
 
