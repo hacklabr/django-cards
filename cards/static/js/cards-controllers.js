@@ -300,6 +300,12 @@
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
 
+            $scope.new_tag = function (new_tag) {
+                return {
+                    name: new_tag
+                };
+            };
+
             function valid_card() {
                 var error = $scope.card.title && $scope.card.title != '' &&
                 $scope.card.audience && $scope.card.audience.id != '' &&
