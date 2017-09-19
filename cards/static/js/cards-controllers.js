@@ -172,6 +172,7 @@
             $scope.card.axis = {};
             $scope.card.image_gallery = [];
             $scope.card.youtube_embeds = [];
+            $scope.validation_errors = [];
             $scope.editing_mode = false;
 
             $scope.audiences = Audiences.query();
@@ -193,10 +194,14 @@
             }
 
             function valid_card() {
-                var error = $scope.card.title && $scope.card.title != '' &&
-                $scope.card.audience && $scope.card.audience.id != '' &&
-                $scope.card.axis && $scope.card.axis.id != '';
-                return error;
+                $scope.validation_errors = [];
+                if (!$scope.card.title || $scope.card.title == '')
+                    $scope.validation_errors.push('Título é campo obrigatório!');
+                if (!$scope.card.audience || !$scope.card.audience.id || $scope.card.audience.id == '')
+                    $scope.validation_errors.push('Público é campo obrigatório!');
+                if (!$scope.card.axis || !$scope.card.axis.id || $scope.card.axis.id == '')
+                    $scope.validation_errors.push('Eixo é campo obrigatório!');
+                return $scope.validation_errors.length == 0;
             }
             $scope.create_card = function () {
                 if (valid_card()) {
@@ -294,6 +299,7 @@
         function ($scope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
             $scope.card = Cards.get({id: $scope.card_id});
+            $scope.validation_errors = [];
             $scope.editing_mode = true;
 
             $scope.audiences = Audiences.query();
@@ -307,10 +313,14 @@
             };
 
             function valid_card() {
-                var error = $scope.card.title && $scope.card.title != '' &&
-                $scope.card.audience && $scope.card.audience.id != '' &&
-                $scope.card.axis && $scope.card.axis.id != '';
-                return error;
+                $scope.validation_errors = [];
+                if (!$scope.card.title || $scope.card.title == '')
+                    $scope.validation_errors.push('Título é campo obrigatório!');
+                if (!$scope.card.audience || !$scope.card.audience.id || $scope.card.audience.id == '')
+                    $scope.validation_errors.push('Público é campo obrigatório!');
+                if (!$scope.card.axis || !$scope.card.axis.id || $scope.card.axis.id == '')
+                    $scope.validation_errors.push('Eixo é campo obrigatório!');
+                return $scope.validation_errors.length == 0;
             }
             $scope.update_card = function () {
                 if ($scope.card.editable && valid_card()) {
