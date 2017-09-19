@@ -291,8 +291,6 @@
                 $scope.slide_mode = $scope.mode.SHOW_VIDEO;
             };
             $scope.remove_video = function (index) {
-                console.log(index);
-                console.log($scope.card.youtube_embeds[index]);
                 YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
                     $scope.card.youtube_embeds.splice(index, 1);
                     $scope.slide_mode = $scope.mode.ADD_MEDIA;
@@ -444,8 +442,6 @@
                 $scope.slide_mode = $scope.mode.SHOW_VIDEO;
             };
             $scope.remove_video = function (index) {
-                console.log(index);
-                console.log($scope.card.youtube_embeds[index]);
                 YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
                     $scope.card.youtube_embeds.splice(index, 1);
                     $scope.slide_mode = $scope.mode.ADD_MEDIA;
