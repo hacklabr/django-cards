@@ -227,9 +227,9 @@
             $scope.slide_mode = $scope.mode.ADD_MEDIA;
             $scope.new_slide_index = function() {
                 var new_index = 1;
-                if ($scope.card.image_gallery.length > 0)
+                if ($scope.card.image_gallery && $scope.card.image_gallery.length > 0)
                     new_index += $scope.card.image_gallery.length;
-                if ($scope.card.youtube_embeds.length > 0)
+                if ($scope.card.youtube_embeds && $scope.card.youtube_embeds.length > 0)
                     new_index += $scope.card.youtube_embeds.length;
                 return new_index;
             }
@@ -378,9 +378,9 @@
             $scope.slide_mode = $scope.mode.ADD_MEDIA;
             $scope.new_slide_index = function() {
                 var new_index = 1;
-                if ($scope.card.image_gallery.length > 0)
+                if ($scope.card.image_gallery && $scope.card.image_gallery.length > 0)
                     new_index += $scope.card.image_gallery.length;
-                if ($scope.card.youtube_embeds.length > 0)
+                if ($scope.card.youtube_embeds && $scope.card.youtube_embeds.length > 0)
                     new_index += $scope.card.youtube_embeds.length;
                 return new_index;
             }
