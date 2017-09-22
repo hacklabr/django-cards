@@ -91,10 +91,6 @@
 
             /* Tags */
             $scope.tag = '';
-            if ($routeParams.tag) {
-                $scope.filter.tags.push($routeParams.tag);
-                $scope.get_cards();
-            } 
             $scope.insert_tag = function (tag) {
                 if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
                     $scope.filter.tags.push(tag.toLowerCase());
@@ -106,6 +102,28 @@
                 $scope.filter.tags.splice(index, 1);
                 $scope.get_cards();
             };
+
+            /* Search routing */
+            {
+                var additional_params = false;
+                if ($routeParams.tag) {
+                    $scope.filter.tags.push($routeParams.tag);
+                    additional_params = true;
+                }
+                else if ($routeParams.audience) {
+                    $scope.filter.audience = $routeParams.audience;
+                    additional_params = true;
+                }
+                else if ($routeParams.axis) {
+                    $scope.filter.axis = $routeParams.axis;
+                    additional_params = true;
+                }
+
+                if (additional_params) {
+                    console.log("Teste")
+                    $scope.get_cards();
+                }
+            }
 
             $scope.cards.all.$promise.then(function () {
                 filter_by_status();
