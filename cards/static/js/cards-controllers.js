@@ -97,7 +97,7 @@
             } 
             $scope.insert_tag = function (tag) {
                 if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
-                    $scope.filter.tags.push(tag);
+                    $scope.filter.tags.push(tag.toLowerCase());
                     $scope.get_cards();
                 }
                 $scope.tag = '';                
@@ -184,7 +184,7 @@
             $scope.card.tags = [];
             $scope.new_tag = function (new_tag) {
                 return {
-                    name: new_tag
+                    name: new_tag.toLowerCase()
                 };
             };
 
