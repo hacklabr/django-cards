@@ -69,7 +69,13 @@ class CardViewSet(viewsets.ModelViewSet):
         queryset2 = Card.objects.filter(author__in=galera, is_certified = False)
         # If user is not in any groups, this queryset will get all the cards user made
         queryset3 = Card.objects.filter(author=self.request.user)
+        # If user is in one of the admin groups, he can see everything. EVERYTHING.
+        if bool(set(settings.DJANGO_CARDS_ADMIN_GROUPS) & set(g.name for g in self.request.user.groups.all())):
+            omniscient_queryset = Card.objects.all()
+            return omniscient_queryset
+
         return queryset | queryset2 | queryset3
+
 
 class ImageViewSet(viewsets.ModelViewSet):
 
