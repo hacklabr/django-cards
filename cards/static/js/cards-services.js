@@ -48,7 +48,7 @@
 
     app.factory('TinymceOptions', function(){
         return {
-            toolbar: 'bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | quicklink link fullscreen | removeformat'
+            toolbar: 'bold italic | bullist numlist | quicklink link fullscreen | removeformat'
         }
     });
 
