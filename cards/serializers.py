@@ -159,6 +159,9 @@ class CardSerializer(serializers.ModelSerializer):
             # card.audience.save()
             # raise Exception('PARATUDO')
 
+        # For dwelling with images (reverse foreign key), embeds (reverse foreign key) and tags (own package), we need
+        # the card object to be instantiated
+        card.save()
         if 'authors' in self.initial_data.keys():
             authors = self.initial_data.pop('authors')
             for dude in authors:
@@ -168,9 +171,6 @@ class CardSerializer(serializers.ModelSerializer):
                                     author_description=description,
                                     card=card)
 
-        # For dwelling with images (reverse foreign key), embeds (reverse foreign key) and tags (own package), we need
-        # the card object to be instantiated
-        card.save()
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
             for image in image_gallery:

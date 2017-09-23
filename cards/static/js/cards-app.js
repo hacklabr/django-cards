@@ -8,6 +8,7 @@
         'ngFileUpload',
         'ngRoute',
         'ngSanitize',
+        'ui.bootstrap',
         'ui.select',
         'ui.tinymce',
         'header',
