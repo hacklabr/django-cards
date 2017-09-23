@@ -227,6 +227,7 @@
                         return tag.name;
                     });
                     Cards.save($scope.card).$promise.then(function (response) {
+                        $scope.unsaved_content = false;
                         window.location.replace('#!/' + response.id);
                     }).catch(function(error) {
                         console.log(error);
@@ -323,17 +324,18 @@
             };
 
             /* Tracking unsaved changes. */
-            var changed_once = false; /* Guard: $scope.card is implicitly changed once. */
+            $scope.changed_once = false; /* Guard: $scope.card is implicitly changed once. */
             $scope.$on('$locationChangeStart', function (e) {
+                console.log($scope.unsaved_content)
                 if ($scope.unsaved_content)
                     if (!window.confirm('Há alterações não salvas. Deseja mesmo sair?'))
                         e.preventDefault();
             });
             $scope.$watchCollection('card', function (newVal, oldVal) {
-                if (changed_once)
+                if ($scope.changed_once)
                     $scope.unsaved_content = true;
                 else
-                    changed_once = true;
+                    $scope.changed_once = true;
             });
             $scope.unsaved_content = false;
 
@@ -347,7 +349,6 @@
         function ($scope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
 
-            var changed_once = false; /* Guard: $scope.card is implicitly changed once. */
             Cards.get({id: $scope.card_id}).$promise.then(function (response) {
                 $scope.card = response;
                 $scope.new_slide_index = function() {
@@ -360,16 +361,17 @@
                 }
 
                 /* Tracking unsaved changes. */
+                $scope.changed_once = false; /* Guard: $scope.card is implicitly changed once. */
                 $scope.$on('$locationChangeStart', function (e) {
                     if ($scope.unsaved_content)
                         if (!window.confirm('Há alterações não salvas. Deseja mesmo sair?'))
                             e.preventDefault();
                 });
                 $scope.$watchCollection('card', function (newVal, oldVal) {
-                    if (changed_once)
+                    if ($scope.changed_once)
                         $scope.unsaved_content = true;
                     else
-                        changed_once = true;
+                        $scope.changed_once = true;
                 });
                 $scope.unsaved_content = false;
             });
@@ -404,6 +406,7 @@
                         return tag.name;
                     });
                     Cards.update($scope.card).$promise.then(function (response) {
+                        $scope.unsaved_content = false;
                         window.location.replace('#!/' + $scope.card_id);
                     }).catch(function (error) {
                         $scope.card.tags = $scope.backup_tags;
