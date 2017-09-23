@@ -322,6 +322,21 @@
                 return 'btn-default';
             };
 
+            /* Tracking unsaved changes. */
+            var changed_once = false; /* Guard: $scope.card is implicitly changed once. */
+            $scope.$on('$locationChangeStart', function (e) {
+                if ($scope.unsaved_content)
+                    if (!window.confirm('Há alterações não salvas. Deseja mesmo sair?'))
+                        e.preventDefault();
+            });
+            $scope.$watchCollection('card', function (newVal, oldVal) {
+                if (changed_once)
+                    $scope.unsaved_content = true;
+                else
+                    changed_once = true;
+            });
+            $scope.unsaved_content = false;
+
             $scope.safe_url = function (url) {
                 return $sce.trustAsResourceUrl(url);
             };
@@ -331,7 +346,33 @@
     app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
         function ($scope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
-            $scope.card = Cards.get({id: $scope.card_id});
+
+            var changed_once = false; /* Guard: $scope.card is implicitly changed once. */
+            Cards.get({id: $scope.card_id}).$promise.then(function (response) {
+                $scope.card = response;
+                $scope.new_slide_index = function() {
+                    var new_index = 1;
+                    if ($scope.card.image_gallery && $scope.card.image_gallery.length > 0)
+                        new_index += $scope.card.image_gallery.length;
+                    if ($scope.card.youtube_embeds && $scope.card.youtube_embeds.length > 0)
+                        new_index += $scope.card.youtube_embeds.length;
+                    return new_index;
+                }
+
+                /* Tracking unsaved changes. */
+                $scope.$on('$locationChangeStart', function (e) {
+                    if ($scope.unsaved_content)
+                        if (!window.confirm('Há alterações não salvas. Deseja mesmo sair?'))
+                            e.preventDefault();
+                });
+                $scope.$watchCollection('card', function (newVal, oldVal) {
+                    if (changed_once)
+                        $scope.unsaved_content = true;
+                    else
+                        changed_once = true;
+                });
+                $scope.unsaved_content = false;
+            });
             $scope.validation_errors = [];
             $scope.editing_mode = true;
 
@@ -395,12 +436,7 @@
             };
             $scope.slide_mode = $scope.mode.ADD_MEDIA;
             $scope.new_slide_index = function() {
-                var new_index = 1;
-                if ($scope.card.image_gallery && $scope.card.image_gallery.length > 0)
-                    new_index += $scope.card.image_gallery.length;
-                if ($scope.card.youtube_embeds && $scope.card.youtube_embeds.length > 0)
-                    new_index += $scope.card.youtube_embeds.length;
-                return new_index;
+                return 1; /* Overwritten on card retrival. */
             }
 
             /* Images */
