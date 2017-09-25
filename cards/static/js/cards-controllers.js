@@ -111,6 +111,13 @@
                     name: new_tag.toLowerCase()
                 };
             };
+            $scope.insert_tag = function(tag) {
+                if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
+                    $scope.filter.tags.push({name: tag.toLowerCase()});
+                    $scope.get_cards();
+                }
+                $scope.tag = '';
+            }
             $scope.remove_tag = function(index) {
                 $scope.filter.tags.splice(index, 1);
                 $scope.get_cards();
@@ -120,7 +127,7 @@
             {
                 var additional_params = false;
                 if ($routeParams.tag) {
-                    $scope.filter.tags.push($routeParams.tag);
+                    $scope.filter.tags.push({name: $routeParams.tag});
                     additional_params = true;
                 }
                 else if ($routeParams.audience) {
