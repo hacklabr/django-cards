@@ -78,7 +78,9 @@
                     axis__name: $scope.filter.axis,
                     is_certified: $scope.filter.status,
                     search: $scope.filter.keyword,
-                    tags__name: $scope.filter.tags
+                    tags__name: $scope.filter.tags.map(function(tag) {
+                        return tag.name;
+                    })
                 }).$promise.then(function(data) {
                     $scope.cards.all = data;
                     filter_by_status();
@@ -89,14 +91,25 @@
                 });
             };
 
+            /* Tags - old */
+            // $scope.tag = '';
+            // $scope.insert_tag = function(tag) {
+            //     if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
+            //         $scope.filter.tags.push(tag.toLowerCase());
+            //         $scope.get_cards();
+            //     }
+            //     $scope.tag = '';
+            // };
+            // $scope.remove_tag = function(index) {
+            //     $scope.filter.tags.splice(index, 1);
+            //     $scope.get_cards();
+            // };
+
             /* Tags */
-            $scope.tag = '';
-            $scope.insert_tag = function(tag) {
-                if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
-                    $scope.filter.tags.push(tag.toLowerCase());
-                    $scope.get_cards();
-                }
-                $scope.tag = '';                
+            $scope.new_tag = function(new_tag) {
+                return {
+                    name: new_tag.toLowerCase()
+                };
             };
             $scope.remove_tag = function(index) {
                 $scope.filter.tags.splice(index, 1);
@@ -120,7 +133,6 @@
                 }
 
                 if (additional_params) {
-                    console.log("Teste")
                     $scope.get_cards();
                 }
             }
