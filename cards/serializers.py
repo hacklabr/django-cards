@@ -90,13 +90,18 @@ class CardSerializer(serializers.ModelSerializer):
             return False
 
     def get_editable(self, obj):
+        # I'm defining some bool variables first
+        user = self.context['request'].user
+        user_is_in_admin_group = bool(set([g.name for g in user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS))
+
         if not obj.is_certified:
-            if obj.author == self.context['request'].user:
+            if obj.author == user:
+                return True
+            elif user_is_in_admin_group:
                 return True
 
         if obj.is_certified:
-            user = self.context['request'].user
-            if bool(set([g.name for g in user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+            if user_is_in_admin_group:
                 return True
 
         return False
