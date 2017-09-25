@@ -152,18 +152,20 @@
                 $scope.slides = image_slides.concat(video_slides);
             });
 
-            $scope.like = function () {
-                Likes.save({card: $scope.card_id}).$promise.then(function(response) {
-                    $scope.card.user_liked = response.id;
-                    $scope.card.likes += 1;
-                });
-            };
-            $scope.unlike = function () {
-                Likes.delete({id: $scope.card.user_liked}).$promise.then(function() {
-                    $scope.card.user_liked = null;
-                    $scope.card.likes -= 1;
-                });
-            };
+            $scope.toggle_like = function () {
+                if ($scope.card.user_liked) {
+                    Likes.delete({id: $scope.card.user_liked}).$promise.then(function() {
+                        $scope.card.user_liked = null;
+                        $scope.card.likes -= 1;
+                    });
+                }
+                else {
+                    Likes.save({card: $scope.card_id}).$promise.then(function(response) {
+                        $scope.card.user_liked = response.id;
+                        $scope.card.likes += 1;
+                    });
+                }
+            }
 
             $scope.delete_card = function () {
                 if (window.confirm("Deseja mesmo excluir essa prática?")) {
