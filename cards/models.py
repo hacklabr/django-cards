@@ -39,6 +39,11 @@ class Axis(models.Model):
     def __unicode__(self):
         return u'%s' % (self.name)
 
+class CardManager(models.Manager):
+    def get_queryset(self):
+        return super(CardManager, self).get_queryset().order_by('-id')
+
+
 class Card(models.Model):
     audience = models.ForeignKey('Audience')  # , blank=True, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), blank=True, null=True)
@@ -53,8 +58,15 @@ class Card(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=255)
     you_will_need = models.TextField(verbose_name=_('Requirements for this'), blank=True)
 
+    objects = CardManager()
+
     def __unicode__(self):
         return u'%s' % (self.title)
+
+class ImageManager():
+    def get_queryset(self):
+        return super(ImageManager, self).get_queryset().order_by('id')
+
 
 class Image(models.Model):
     '''
@@ -65,6 +77,7 @@ class Image(models.Model):
     card = models.ForeignKey('Card', related_name='image_gallery', on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'), blank=True, null=True)
 
+    objects = ImageManager()
     def __unicode__(self):
         return u'{} - Card {} - User {}'.format(self.image, self.card, self.user)
 
@@ -72,6 +85,11 @@ class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     card = models.ForeignKey(Card)
     created = models.DateTimeField(auto_now_add=True)
+
+class YoutubeEmbedManager(models.Manager):
+    def get_queryset(self):
+        return super(YoutubeEmbedManager, self).get_queryset().order_by('id')
+
 
 class YoutubeEmbed(models.Model):
     video_id = models.CharField(max_length=255)
