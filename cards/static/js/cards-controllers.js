@@ -166,12 +166,14 @@
             };
 
             $scope.delete_card = function () {
-                if ($scope.card.editable) {
-                    Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
-                        window.location.replace('#!/');
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
+                if (window.confirm("Deseja mesmo excluir essa prática?")) {
+                    if ($scope.card.editable) {
+                        Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
+                            window.location.replace('#!/');
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
                 }
             };
 
@@ -272,12 +274,14 @@
                 $scope.slide_mode = $scope.mode.SHOW_IMAGE;
             };
             $scope.remove_image = function (index) {
-                Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
-                    $scope.card.image_gallery.splice(index, 1);
-                    $scope.slide_mode = $scope.mode.ADD_MEDIA;
-                }).catch(function (error){
-                    console.log(error);
-                });
+                if (window.confirm("Deseja mesmo excluir essa imagem?")) {
+                    Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
+                        $scope.card.image_gallery.splice(index, 1);
+                        $scope.slide_mode = $scope.mode.ADD_MEDIA;
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
             };
             $scope.is_selected_image = function (index) {
                 if ($scope.slide_mode == $scope.mode.SHOW_IMAGE && $scope.selected_image_index == index)
@@ -310,12 +314,14 @@
                 $scope.slide_mode = $scope.mode.SHOW_VIDEO;
             };
             $scope.remove_video = function (index) {
-                YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
-                    $scope.card.youtube_embeds.splice(index, 1);
-                    $scope.slide_mode = $scope.mode.ADD_MEDIA;
-                }).catch(function (error) {
-                    console.log(error);
-                });
+                if (window.confirm("Deseja mesmo excluir esse vídeo?")) {
+                    YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
+                        $scope.card.youtube_embeds.splice(index, 1);
+                        $scope.slide_mode = $scope.mode.ADD_MEDIA;
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             };
             $scope.is_selected_video = function (index) {
                 if ($scope.slide_mode == $scope.mode.SHOW_VIDEO && $scope.selected_video_index == index)
@@ -416,12 +422,14 @@
             }
 
             $scope.delete_card = function () {
-                if ($scope.card.editable) {
-                    Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
-                        window.location.replace('#!/');
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
+                if (window.confirm("Deseja mesmo excluir essa prática?")) {
+                    if ($scope.card.editable) {
+                        Cards.delete({id: $scope.card_id}).$promise.then(function (response) {
+                            window.location.replace('#!/');
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
                 }
             };
 
@@ -461,12 +469,14 @@
                 $scope.slide_mode = $scope.mode.SHOW_IMAGE;
             };
             $scope.remove_image = function (index) {
-                Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
-                    $scope.card.image_gallery.splice(index, 1);
-                    $scope.slide_mode = $scope.mode.ADD_MEDIA;
-                }).catch(function (error){
-                    console.log(error);
-                });
+                if (window.confirm("Deseja mesmo excluir essa imagem?")) {
+                    Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function () {
+                        $scope.card.image_gallery.splice(index, 1);
+                        $scope.slide_mode = $scope.mode.ADD_MEDIA;
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
             };
             $scope.is_selected_image = function (index) {
                 if ($scope.slide_mode == $scope.mode.SHOW_IMAGE && $scope.selected_image_index == index)
@@ -499,12 +509,14 @@
                 $scope.slide_mode = $scope.mode.SHOW_VIDEO;
             };
             $scope.remove_video = function (index) {
-                YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
-                    $scope.card.youtube_embeds.splice(index, 1);
-                    $scope.slide_mode = $scope.mode.ADD_MEDIA;
-                }).catch(function (error) {
-                    console.log(error);
-                });
+                if (window.confirm("Deseja mesmo excluir esse vídeo?")) {
+                    YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function () {
+                        $scope.card.youtube_embeds.splice(index, 1);
+                        $scope.slide_mode = $scope.mode.ADD_MEDIA;
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             };
             $scope.is_selected_video = function (index) {
                 if ($scope.slide_mode == $scope.mode.SHOW_VIDEO && $scope.selected_video_index == index)
