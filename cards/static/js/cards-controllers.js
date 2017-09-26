@@ -1,6 +1,6 @@
 (function(angular){
     'use strict';
-    var app = angular.module('cards.controllers', ['ngCookies', 'ui.bootstrap']);
+    var app = angular.module('cards.controllers', ['ngCookies']);
 
     app.controller('CardsListCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
         function($scope, $routeParams, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
