@@ -109,9 +109,6 @@ class LikeViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
-    def perform_destroy(self, instance):
-        super(LikeViewSet, self).perform_destroy()
-
 
 class TagsViewSet(viewsets.ModelViewSet):
 
