@@ -78,7 +78,9 @@
                     axis__name: $scope.filter.axis,
                     is_certified: $scope.filter.status,
                     search: $scope.filter.keyword,
-                    tags__name: $scope.filter.tags
+                    tags__name: $scope.filter.tags.map(function(tag) {
+                        return tag.name;
+                    })
                 }).$promise.then(function(data) {
                     $scope.cards.all = data;
                     filter_by_status();
@@ -89,15 +91,33 @@
                 });
             };
 
+            /* Tags - old */
+            // $scope.tag = '';
+            // $scope.insert_tag = function(tag) {
+            //     if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
+            //         $scope.filter.tags.push(tag.toLowerCase());
+            //         $scope.get_cards();
+            //     }
+            //     $scope.tag = '';
+            // };
+            // $scope.remove_tag = function(index) {
+            //     $scope.filter.tags.splice(index, 1);
+            //     $scope.get_cards();
+            // };
+
             /* Tags */
-            $scope.tag = '';
+            $scope.new_tag = function(new_tag) {
+                return {
+                    name: new_tag.toLowerCase()
+                };
+            };
             $scope.insert_tag = function(tag) {
                 if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
-                    $scope.filter.tags.push(tag.toLowerCase());
+                    $scope.filter.tags.push({name: tag.toLowerCase()});
                     $scope.get_cards();
                 }
-                $scope.tag = '';                
-            };
+                $scope.tag = '';
+            }
             $scope.remove_tag = function(index) {
                 $scope.filter.tags.splice(index, 1);
                 $scope.get_cards();
@@ -107,7 +127,7 @@
             {
                 var additional_params = false;
                 if ($routeParams.tag) {
-                    $scope.filter.tags.push($routeParams.tag);
+                    $scope.filter.tags.push({name: $routeParams.tag});
                     additional_params = true;
                 }
                 else if ($routeParams.audience) {
@@ -120,7 +140,6 @@
                 }
 
                 if (additional_params) {
-                    console.log("Teste")
                     $scope.get_cards();
                 }
             }
@@ -205,9 +224,14 @@
 
             $scope.card.tags = [];
             $scope.new_tag = function(new_tag) {
-                return {
-                    name: new_tag.toLowerCase()
-                };
+                if (new_tag.length <= 12) {
+                    return {
+                        name: new_tag.toLowerCase()
+                    };
+                }
+                else {
+                    window.alert("Não é permitido inserir tag com mais de 12 caracteres.");
+                }
             };
 
             $scope.card.authors = [];
@@ -334,7 +358,6 @@
             /* Tracking unsaved changes. */
             $scope.changed_once = false; /* Guard: $scope.card is implicitly changed once. */
             $scope.$on('$locationChangeStart', function(e) {
-                console.log($scope.unsaved_content)
                 if ($scope.unsaved_content)
                     if (!window.confirm('Há alterações não salvas. Deseja mesmo sair?'))
                         e.preventDefault();
@@ -391,9 +414,14 @@
             $scope.tags = Tags.query();
 
             $scope.new_tag = function(new_tag) {
-                return {
-                    name: new_tag
-                };
+                if (new_tag.length <= 12) {
+                    return {
+                        name: new_tag.toLowerCase()
+                    };
+                }
+                else {
+                    window.alert("Não é permitido inserir tag com mais de 12 caracteres.");
+                }
             };
 
             function valid_card() {
