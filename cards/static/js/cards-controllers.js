@@ -1,6 +1,6 @@
 (function(angular){
     'use strict';
-    var app = angular.module('cards.controllers', ['ngCookies']);
+    var app = angular.module('cards.controllers', ['ngCookies', 'ui.bootstrap']);
 
     app.controller('CardsListCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
         function($scope, $routeParams, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
@@ -224,9 +224,14 @@
 
             $scope.card.tags = [];
             $scope.new_tag = function(new_tag) {
-                return {
-                    name: new_tag.toLowerCase()
-                };
+                if (new_tag.length <= 12) {
+                    return {
+                        name: new_tag.toLowerCase()
+                    };
+                }
+                else {
+                    window.alert("Não é permitido inserir tag com mais de 12 caracteres.");
+                }
             };
 
             $scope.card.authors = [];
@@ -353,7 +358,6 @@
             /* Tracking unsaved changes. */
             $scope.changed_once = false; /* Guard: $scope.card is implicitly changed once. */
             $scope.$on('$locationChangeStart', function(e) {
-                console.log($scope.unsaved_content)
                 if ($scope.unsaved_content)
                     if (!window.confirm('Há alterações não salvas. Deseja mesmo sair?'))
                         e.preventDefault();
@@ -410,9 +414,14 @@
             $scope.tags = Tags.query();
 
             $scope.new_tag = function(new_tag) {
-                return {
-                    name: new_tag
-                };
+                if (new_tag.length <= 12) {
+                    return {
+                        name: new_tag.toLowerCase()
+                    };
+                }
+                else {
+                    window.alert("Não é permitido inserir tag com mais de 12 caracteres.");
+                }
             };
 
             function valid_card() {
