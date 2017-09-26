@@ -12,7 +12,6 @@
         'ui.select',
         'ui.tinymce',
         'header',
-        'django',
     ]);
 
     app.config(['$locationProvider', '$routeProvider',
