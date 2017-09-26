@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.shortcuts import render
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, permissions
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from .models import Audience, Authors, Axis, Card, Image, Like, YoutubeEmbed
@@ -8,9 +8,11 @@ from .serializers import AudienceSerializer, AuthorsSerializer, AxisSerializer, 
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from .permissions import IsUserOrReadAndCreate
 
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
+
     model = Audience
     queryset = Audience.objects.all()
     serializer_class = AudienceSerializer
@@ -20,10 +22,13 @@ class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
 #     queryset = Authors.objects.all()
 #     serializer_class = AuthorsSerializer
 
+
 class AxisViewSet(viewsets.ReadOnlyModelViewSet):
+
     model = Axis
     queryset = Axis.objects.all()
     serializer_class = AxisSerializer
+
 
 class CardViewSet(viewsets.ModelViewSet):
 
@@ -32,6 +37,7 @@ class CardViewSet(viewsets.ModelViewSet):
 
     filter_backends = ( filters.DjangoFilterBackend, filters.SearchFilter)
     filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name')
+    permission_classes = (permissions.IsAuthenticated,)
 
     search_fields = (
                      'development',
@@ -82,17 +88,20 @@ class ImageViewSet(viewsets.ModelViewSet):
     model = Image
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    permission_classes = (IsUserOrReadAndCreate,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
+
 
 class LikeViewSet(viewsets.ModelViewSet):
     model = Like
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    permission_classes = (IsUserOrReadAndCreate,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -100,11 +109,12 @@ class LikeViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_destroy(self, instance):
+        super(LikeViewSet, self).perform_destroy()
+
+
 class TagsViewSet(viewsets.ModelViewSet):
-    # def list(self, request):
-    #     queryset = Card.tags.all().names()
-    #     serializer = TagsInCardsSerializer(data=queryset, many=True)
-    #     return None
+
     queryset = Card.tags.all()
     serializer_class = TagsInCardsSerializer
 
@@ -116,19 +126,17 @@ class YoutubeEmbedViewSet(viewsets.ModelViewSet):
     model = YoutubeEmbed
     queryset = YoutubeEmbed.objects.all()
     serializer_class = YoutubeEmbedSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 def cards_view(request):
     return render(request, 'cards.html', {})
 
-
 def cards_list_view(request):
     return render(request, 'cards-list.html', {})
 
-
 def card_new_view(request):
     return render(request, 'card-new.html', {})
-
 
 def card_detail_view(request, *args, **kwargs):
     return render(request, 'card-detail.html', {})
