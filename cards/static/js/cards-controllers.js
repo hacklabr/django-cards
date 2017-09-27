@@ -222,7 +222,8 @@
 
             $scope.tinymceOptions = TinymceOptions;
 
-            $scope.card.tags = [];
+            $scope.proxy = {};
+            $scope.proxy.tags = [];
             $scope.new_tag = function(new_tag) {
                 if (new_tag.length <= 12) {
                     return {
@@ -251,7 +252,7 @@
             }
             $scope.create_card = function() {
                 if (valid_card()) {
-                    $scope.card.tags = $scope.card.tags.map(function(tag) {
+                    $scope.card.tags = $scope.proxy.tags.map(function(tag) {
                         return tag.name;
                     });
                     Cards.save($scope.card).$promise.then(function(response) {
@@ -382,6 +383,8 @@
 
             Cards.get({id: $scope.card_id}).$promise.then(function(response) {
                 $scope.card = response;
+                $scope.proxy = {};
+                $scope.proxy.tags = $scope.card.tags;
                 $scope.new_slide_index = function() {
                     var new_index = 1;
                     if ($scope.card.image_gallery && $scope.card.image_gallery.length > 0)
@@ -437,15 +440,13 @@
             $scope.update_card = function() {
                 if ($scope.card.editable && valid_card()) {
                     $scope.card.id = $scope.card_id;
-                    $scope.backup_tags = $scope.card.tags;
-                    $scope.card.tags = $scope.card.tags.map(function(tag) {
+                    $scope.card.tags = $scope.proxy.tags.map(function(tag) {
                         return tag.name;
                     });
                     Cards.update($scope.card).$promise.then(function(response) {
                         $scope.unsaved_content = false;
                         window.location.replace('#!/' + $scope.card_id);
                     }).catch(function(error) {
-                        $scope.card.tags = $scope.backup_tags;
                         console.log(error);
                     });
                 }
