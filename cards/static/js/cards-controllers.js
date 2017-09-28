@@ -21,6 +21,14 @@
             $scope.filter.status = '';
             $scope.filter.tags = [];
 
+            $scope.card_image = function(card) {
+                console.log(card)
+                if (card.image_gallery.length > 0)
+                    return card.image_gallery[0].image;
+                return '/static/img/card-default.png';
+            };
+
+
             /* Because modulo operation is **very wrongly** defined in JS for negative numbers. */
             function safe_mod(m, n) {
                 return ((m % n) + n) % n;
