@@ -45,7 +45,7 @@
             $scope.certified_base_slide = 0;
             $scope.community_base_slide = 0;
             $scope.certified_slides_down = function() {
-                $scope.slider.certified = get_slides_row($scope.cards.certified, --$scope.certified_base_slide);  
+                $scope.slider.certified = get_slides_row($scope.cards.certified, --$scope.certified_base_slide);
             }
             $scope.certified_slides_up = function() {
                 $scope.slider.certified = get_slides_row($scope.cards.certified, ++$scope.certified_base_slide);
@@ -68,7 +68,7 @@
                     });
             }
 
-            $scope.slider = {};          
+            $scope.slider = {};
 
             $scope.blank_filters = true;
 
@@ -94,7 +94,7 @@
                     $scope.certified_base_slide = 0;
                     $scope.community_base_slide = 0;
                     $scope.slider.certified = get_slides_row($scope.cards.certified, $scope.certified_base_slide);
-                    $scope.slider.community = get_slides_row($scope.cards.community, $scope.community_base_slide); 
+                    $scope.slider.community = get_slides_row($scope.cards.community, $scope.community_base_slide);
                 });
             };
 
@@ -155,8 +155,8 @@
                 filter_by_status();
                 $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
                 $scope.slider.community = get_slides_row($scope.cards.community, 0);
-            });    
-            
+            });
+
             $scope.$watchCollection('filter', function(newVal, oldVal) {
                 $scope.get_cards();
             });
@@ -165,7 +165,7 @@
 
     app.controller('CardDetailCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Cards', 'Likes',
         function($scope, $routeParams, $http, $sce, Cards, Likes) {
-            $scope.card_id = $routeParams.cardId; 
+            $scope.card_id = $routeParams.cardId;
             $scope.card;
             Cards.get({id: $scope.card_id}).$promise.then(function(response) {
                 $scope.card = response;
@@ -194,12 +194,13 @@
             }
 
             $scope.delete_card = function() {
-                if (window.confirm("Deseja mesmo excluir essa prática?")) {
+                if (window.confirm('Deseja mesmo excluir essa prática?')) {
                     if ($scope.card.editable) {
                         Cards.delete({id: $scope.card_id}).$promise.then(function(response) {
                             window.location.replace('#!/');
                         }).catch(function(error) {
-                            console.log(error);
+                            $scope.error_messages.push('Não foi possível excluir a prática.');
+                            console.error(error);
                         });
                     }
                 }
@@ -211,7 +212,7 @@
                 return $sce.trustAsResourceUrl(url);
             };
         }
-    ]); 
+    ]);
 
     app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
         function($scope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
@@ -220,7 +221,7 @@
             $scope.card.axis = {};
             $scope.card.image_gallery = [];
             $scope.card.youtube_embeds = [];
-            $scope.validation_errors = [];
+            $scope.error_messages = [];
             $scope.editing_mode = false;
 
             $scope.audiences = Audiences.query();
@@ -238,7 +239,7 @@
                     };
                 }
                 else {
-                    window.alert("Não é permitido inserir tag com mais de 12 caracteres.");
+                    window.alert('Não é permitido inserir tag com mais de 12 caracteres.');
                 }
             };
 
@@ -248,14 +249,14 @@
             }
 
             function valid_card() {
-                $scope.validation_errors = [];
+                $scope.error_messages = [];
                 if (!$scope.card.title || $scope.card.title == '')
-                    $scope.validation_errors.push('Título é campo obrigatório!');
+                    $scope.error_messages.push('Título é campo obrigatório!');
                 if (!$scope.card.audience || !$scope.card.audience.id || $scope.card.audience.id == '')
-                    $scope.validation_errors.push('Público é campo obrigatório!');
+                    $scope.error_messages.push('Público é campo obrigatório!');
                 if (!$scope.card.axis || !$scope.card.axis.id || $scope.card.axis.id == '')
-                    $scope.validation_errors.push('Eixo é campo obrigatório!');
-                return $scope.validation_errors.length == 0;
+                    $scope.error_messages.push('Eixo é campo obrigatório!');
+                return $scope.error_messages.length == 0;
             }
             $scope.create_card = function() {
                 if (valid_card()) {
@@ -266,7 +267,8 @@
                         $scope.unsaved_content = false;
                         window.location.replace('#!/' + response.id);
                     }).catch(function(error) {
-                        console.log(error);
+                        $scope.error_messages.push('Não foi possível criar a prática.');
+                        console.error(error);
                     });
                 }
             }
@@ -298,7 +300,8 @@
                         $scope.selected_image_index = $scope.card.image_gallery.length - 1;
                         $scope.slide_mode = $scope.mode.SHOW_IMAGE;
                     }).catch(function(error) {
-                        console.log(error);
+                        $scope.error_messages.push('Não foi possível salvar a imagem.');
+                        console.error(error);
                     });
                 }
             };
@@ -308,12 +311,13 @@
                 $scope.slide_mode = $scope.mode.SHOW_IMAGE;
             };
             $scope.remove_image = function(index) {
-                if (window.confirm("Deseja mesmo excluir essa imagem?")) {
+                if (window.confirm('Deseja mesmo excluir essa imagem?')) {
                     Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function() {
                         $scope.card.image_gallery.splice(index, 1);
                         $scope.slide_mode = $scope.mode.ADD_MEDIA;
-                    }).catch(function(error){
-                        console.log(error);
+                    }).catch(function(error) {
+                        $scope.error_messages.push('Não foi possível excluir a imagem.');
+                        console.error(error);
                     });
                 }
             };
@@ -325,11 +329,11 @@
 
             /* Videos */
             $scope.embed_video = function() {
-                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; 
+                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                 var result = youtube_pattern.exec($scope.video_url);
                 $scope.video_url = '';
                 var youtube_id;
-                if (result && result[2].length == 11){
+                if (result && result[2].length == 11) {
                     youtube_id = result[2];
                 }
                 YouTubeEmbeds.save({video_id: youtube_id}).$promise.then(function(response) {
@@ -339,7 +343,8 @@
                     $scope.selected_video_index = $scope.card.youtube_embeds.length - 1;
                     $scope.slide_mode = $scope.mode.SHOW_VIDEO;
                 }).catch(function(error) {
-                    console.log(error);
+                    $scope.error_messages.push('Não foi possível salvar o vídeo.');
+                    console.error(error);
                 });
             }
             $scope.select_video = function(index) {
@@ -348,12 +353,13 @@
                 $scope.slide_mode = $scope.mode.SHOW_VIDEO;
             };
             $scope.remove_video = function(index) {
-                if (window.confirm("Deseja mesmo excluir esse vídeo?")) {
+                if (window.confirm('Deseja mesmo excluir esse vídeo?')) {
                     YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function() {
                         $scope.card.youtube_embeds.splice(index, 1);
                         $scope.slide_mode = $scope.mode.ADD_MEDIA;
                     }).catch(function(error) {
-                        console.log(error);
+                        $scope.error_messages.push('Não foi possível excluir o vídeo.');
+                        console.error(error);
                     });
                 }
             };
@@ -416,7 +422,7 @@
                 });
                 $scope.unsaved_content = false;
             });
-            $scope.validation_errors = [];
+            $scope.error_messages = [];
             $scope.editing_mode = true;
 
             $scope.audiences = Audiences.query();
@@ -430,19 +436,19 @@
                     };
                 }
                 else {
-                    window.alert("Não é permitido inserir tag com mais de 12 caracteres.");
+                    window.alert('Não é permitido inserir tag com mais de 12 caracteres.');
                 }
             };
 
             function valid_card() {
-                $scope.validation_errors = [];
+                $scope.error_messages = [];
                 if (!$scope.card.title || $scope.card.title == '')
-                    $scope.validation_errors.push('Título é campo obrigatório!');
+                    $scope.error_messages.push('Título é campo obrigatório!');
                 if (!$scope.card.audience || !$scope.card.audience.id || $scope.card.audience.id == '')
-                    $scope.validation_errors.push('Público é campo obrigatório!');
+                    $scope.error_messages.push('Público é campo obrigatório!');
                 if (!$scope.card.axis || !$scope.card.axis.id || $scope.card.axis.id == '')
-                    $scope.validation_errors.push('Eixo é campo obrigatório!');
-                return $scope.validation_errors.length == 0;
+                    $scope.error_messages.push('Eixo é campo obrigatório!');
+                return $scope.error_messages.length == 0;
             }
             $scope.update_card = function() {
                 if ($scope.card.editable && valid_card()) {
@@ -454,18 +460,20 @@
                         $scope.unsaved_content = false;
                         window.location.replace('#!/' + $scope.card_id);
                     }).catch(function(error) {
-                        console.log(error);
+                        $scope.error_messages('Não foi possível atualizar a prática.');
+                        console.error(error);
                     });
                 }
             }
 
             $scope.delete_card = function() {
-                if (window.confirm("Deseja mesmo excluir essa prática?")) {
+                if (window.confirm('Deseja mesmo excluir essa prática?')) {
                     if ($scope.card.editable) {
                         Cards.delete({id: $scope.card_id}).$promise.then(function(response) {
                             window.location.replace('#!/');
                         }).catch(function(error) {
-                            console.log(error);
+                            $scope.error_messages.push('Não foi possível remover a prática.');
+                            console.error(error);
                         });
                     }
                 }
@@ -497,7 +505,8 @@
                         $scope.selected_image_index = $scope.card.image_gallery.length - 1;
                         $scope.slide_mode = $scope.mode.SHOW_IMAGE;
                     }).catch(function(error) {
-                        console.log(error);
+                        $scope.error_messages.push('Não foi possível salvar a imagem.');
+                        console.error(error);
                     });
                 }
             };
@@ -507,12 +516,13 @@
                 $scope.slide_mode = $scope.mode.SHOW_IMAGE;
             };
             $scope.remove_image = function(index) {
-                if (window.confirm("Deseja mesmo excluir essa imagem?")) {
+                if (window.confirm('Deseja mesmo excluir essa imagem?')) {
                     Images.delete({id: $scope.card.image_gallery[index].id}).$promise.then(function() {
                         $scope.card.image_gallery.splice(index, 1);
                         $scope.slide_mode = $scope.mode.ADD_MEDIA;
-                    }).catch(function(error){
-                        console.log(error);
+                    }).catch(function(error) {
+                        $scope.error_messages.push('Não foi possível excluir a imagem.');
+                        console.error(error);
                     });
                 }
             };
@@ -524,11 +534,11 @@
 
             /* Videos */
             $scope.embed_video = function() {
-                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; 
+                var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                 var result = youtube_pattern.exec($scope.video_url);
                 $scope.video_url = '';
                 var youtube_id;
-                if (result && result[2].length == 11){
+                if (result && result[2].length == 11) {
                     youtube_id = result[2];
                 }
                 YouTubeEmbeds.save({video_id: youtube_id}).$promise.then(function(response) {
@@ -538,7 +548,8 @@
                     $scope.selected_video_index = $scope.card.youtube_embeds.length - 1;
                     $scope.slide_mode = $scope.mode.SHOW_VIDEO;
                 }).catch(function(error) {
-                    console.log(error);
+                    $scope.error_messages.push('Não foi possível salvar o vídeo.');
+                    console.error(error);
                 });
             }
             $scope.select_video = function(index) {
@@ -547,12 +558,13 @@
                 $scope.slide_mode = $scope.mode.SHOW_VIDEO;
             };
             $scope.remove_video = function(index) {
-                if (window.confirm("Deseja mesmo excluir esse vídeo?")) {
+                if (window.confirm('Deseja mesmo excluir esse vídeo?')) {
                     YouTubeEmbeds.delete({id: $scope.card.youtube_embeds[index].id}).$promise.then(function() {
                         $scope.card.youtube_embeds.splice(index, 1);
                         $scope.slide_mode = $scope.mode.ADD_MEDIA;
                     }).catch(function(error) {
-                        console.log(error);
+                        $scope.error_messages.push('Não foi possível remover o vídeo.');
+                        console.error(error);
                     });
                 }
             };
