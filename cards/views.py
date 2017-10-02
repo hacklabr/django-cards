@@ -8,7 +8,7 @@ from .serializers import AudienceSerializer, AuthorsSerializer, AxisSerializer, 
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from .permissions import IsUserOrReadAndCreate
+from .permissions import IsUserOrReadAndCreate, InAdminGroupOrCreatorOrReadAndCreate
 
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
@@ -88,7 +88,7 @@ class ImageViewSet(viewsets.ModelViewSet):
     model = Image
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
-    permission_classes = (IsUserOrReadAndCreate,)
+    permission_classes = (InAdminGroupOrCreatorOrReadAndCreate,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
