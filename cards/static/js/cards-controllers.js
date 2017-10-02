@@ -224,6 +224,12 @@
                     window.alert('Não é permitido inserir tag com mais de 12 caracteres.');
                 }
             };
+            $scope.tag_exists = function(new_tag) {
+                for (var tag of $scope.tags)
+                    if (tag.name == new_tag)
+                        return true;
+                return false;
+            }
 
             $scope.card.authors = [];
             $scope.add_author = function() {
@@ -421,6 +427,12 @@
                     window.alert('Não é permitido inserir tag com mais de 12 caracteres.');
                 }
             };
+            $scope.tag_exists = function(new_tag) {
+                for (var tag of $scope.tags)
+                    if (tag.name == new_tag)
+                        return true;
+                return false;
+            }
 
             function valid_card() {
                 $scope.error_messages = [];
