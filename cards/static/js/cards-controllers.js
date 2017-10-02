@@ -7,9 +7,8 @@
 
             /* Services bindings */
             $scope.audiences = Audiences.query();
-            $scope.cards = {};
-            $scope.cards.all = Cards.query();
             $scope.axes = Axes.query();
+            $scope.cards = {};
             $scope.tags = Tags.query();
 
             $scope.show_filter_options = false;
@@ -20,6 +19,13 @@
             $scope.filter.axis = '';
             $scope.filter.status = '';
             $scope.filter.tags = [];
+
+            if ($routeParams.tag)
+                $scope.filter.tags.push({name: $routeParams.tag});
+            if ($routeParams.audience)
+                $scope.filter.audience = $routeParams.audience;
+            if ($routeParams.axis)
+                $scope.filter.axis = $routeParams.axis;
 
             $scope.card_image = function(card) {
                 if (card.image_gallery.length > 0)
@@ -129,33 +135,6 @@
                 $scope.filter.tags.splice(index, 1);
                 $scope.get_cards();
             };
-
-            /* Search routing */
-            {
-                var additional_params = false;
-                if ($routeParams.tag) {
-                    $scope.filter.tags.push({name: $routeParams.tag});
-                    additional_params = true;
-                }
-                else if ($routeParams.audience) {
-                    $scope.filter.audience = $routeParams.audience;
-                    additional_params = true;
-                }
-                else if ($routeParams.axis) {
-                    $scope.filter.axis = $routeParams.axis;
-                    additional_params = true;
-                }
-
-                if (additional_params) {
-                    $scope.get_cards();
-                }
-            }
-
-            $scope.cards.all.$promise.then(function() {
-                filter_by_status();
-                $scope.slider.certified = get_slides_row($scope.cards.certified, 0);
-                $scope.slider.community = get_slides_row($scope.cards.community, 0);
-            });
 
             $scope.$watchCollection('filter', function(newVal, oldVal) {
                 $scope.get_cards();
