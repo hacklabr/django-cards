@@ -9,7 +9,16 @@
             $scope.audiences = Audiences.query();
             $scope.axes = Axes.query();
             $scope.cards = {};
-            $scope.tags = Tags.query();
+            Tags.query().$promise.then(function(response) {
+                $scope.tags = response.sort(function(a, b) {
+                    if (a.name < b.name)
+                        return -1;
+                    else if (a.name > b.name)
+                        return 1;
+                    else
+                        return 0;
+                });
+            });
 
             $scope.show_filter_options = false;
             $scope.keyword = '';
