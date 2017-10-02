@@ -68,7 +68,7 @@ class Image(models.Model):
     '''
     I really really think this is a bad name. Oh well.
     '''
-    image = models.ImageField()
+    image = models.ImageField(upload_to='cards_images/')
     description = models.TextField(_('Description'), blank=True)
     card = models.ForeignKey('Card', related_name='image_gallery', on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'), blank=True, null=True)
