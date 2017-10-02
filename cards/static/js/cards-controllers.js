@@ -2,8 +2,8 @@
     'use strict';
     var app = angular.module('cards.controllers', ['ngCookies']);
 
-    app.controller('CardsListCtrl', ['$scope', '$routeParams', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
-        function($scope, $routeParams, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
+    app.controller('CardsListCtrl', ['$scope', '$rootScope', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
+        function($scope, $rootScope, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
 
             /* Services bindings */
             $scope.audiences = Audiences.query();
@@ -13,26 +13,20 @@
 
             $scope.show_filter_options = false;
             $scope.keyword = '';
-            $scope.filter = {};
-            $scope.filter.keyword = '';
-            $scope.filter.audience = '';
-            $scope.filter.axis = '';
-            $scope.filter.status = '';
-            $scope.filter.tags = [];
-
-            if ($routeParams.tag)
-                $scope.filter.tags.push({name: $routeParams.tag});
-            if ($routeParams.audience)
-                $scope.filter.audience = $routeParams.audience;
-            if ($routeParams.axis)
-                $scope.filter.axis = $routeParams.axis;
+            if (!$rootScope.card_filter) {
+                $rootScope.card_filter = {};
+                $rootScope.card_filter.keyword = '';
+                $rootScope.card_filter.audience = '';
+                $rootScope.card_filter.axis = '';
+                $rootScope.card_filter.status = '';
+                $rootScope.card_filter.tags = [];
+            }
 
             $scope.card_image = function(card) {
                 if (card.image_gallery.length > 0)
                     return card.image_gallery[0].image;
                 return '/static/img/card-default.png';
             };
-
 
             /* Because modulo operation is **very wrongly** defined in JS for negative numbers. */
             function safe_mod(m, n) {
@@ -79,19 +73,19 @@
             $scope.blank_filters = true;
 
             $scope.get_cards = function() {
-                $scope.filter.keyword = $scope.keyword;
+                $rootScope.card_filter.keyword = $scope.keyword;
                 $scope.blank_filters =
-                    $scope.filter.keyword === '' &&
-                    $scope.filter.audience === '' &&
-                    $scope.filter.axis === '' &&
-                    $scope.filter.status === '' &&
-                    $scope.filter.tags.length === 0;
+                    $rootScope.card_filter.keyword === '' &&
+                    $rootScope.card_filter.audience === '' &&
+                    $rootScope.card_filter.axis === '' &&
+                    $rootScope.card_filter.status === '' &&
+                    $rootScope.card_filter.tags.length === 0;
                 Cards.query({
-                    audience__name: $scope.filter.audience,
-                    axis__name: $scope.filter.axis,
-                    is_certified: $scope.filter.status,
-                    search: $scope.filter.keyword,
-                    tags__name: $scope.filter.tags.map(function(tag) {
+                    audience__name: $rootScope.card_filter.audience,
+                    axis__name: $rootScope.card_filter.axis,
+                    is_certified: $rootScope.card_filter.status,
+                    search: $rootScope.card_filter.keyword,
+                    tags__name: $rootScope.card_filter.tags.map(function(tag) {
                         return tag.name;
                     })
                 }).$promise.then(function(data) {
@@ -107,14 +101,14 @@
             /* Tags - old */
             // $scope.tag = '';
             // $scope.insert_tag = function(tag) {
-            //     if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
-            //         $scope.filter.tags.push(tag.toLowerCase());
+            //     if (tag !== '' && $rootScope.card_filter.tags.indexOf(tag) == -1) {
+            //         $rootScope.card_filter.tags.push(tag.toLowerCase());
             //         $scope.get_cards();
             //     }
             //     $scope.tag = '';
             // };
             // $scope.remove_tag = function(index) {
-            //     $scope.filter.tags.splice(index, 1);
+            //     $rootScope.card_filter.tags.splice(index, 1);
             //     $scope.get_cards();
             // };
 
@@ -125,25 +119,25 @@
                 };
             };
             $scope.insert_tag = function(tag) {
-                if (tag !== '' && $scope.filter.tags.indexOf(tag) == -1) {
-                    $scope.filter.tags.push({name: tag.toLowerCase()});
+                if (tag !== '' && $rootScope.card_filter.tags.indexOf(tag) == -1) {
+                    $rootScope.card_filter.tags.push({name: tag.toLowerCase()});
                     $scope.get_cards();
                 }
                 $scope.tag = '';
             }
             $scope.remove_tag = function(index) {
-                $scope.filter.tags.splice(index, 1);
+                $rootScope.card_filter.tags.splice(index, 1);
                 $scope.get_cards();
             };
 
-            $scope.$watchCollection('filter', function(newVal, oldVal) {
+            $scope.$watchCollection('card_filter', function(newVal, oldVal) {
                 $scope.get_cards();
             });
         }
     ]);
 
-    app.controller('CardDetailCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Cards', 'Likes',
-        function($scope, $routeParams, $http, $sce, Cards, Likes) {
+    app.controller('CardDetailCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Cards', 'Likes',
+        function($scope, $rootScope, $routeParams, $http, $sce, Cards, Likes) {
             $scope.card_id = $routeParams.cardId;
             $scope.card;
             Cards.get({id: $scope.card_id}).$promise.then(function(response) {
@@ -193,8 +187,8 @@
         }
     ]);
 
-    app.controller('NewCardCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
-        function($scope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
+    app.controller('NewCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
+        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
             $scope.card = {is_certified: false};
             $scope.card.audience = {};
             $scope.card.axis = {};
@@ -369,8 +363,8 @@
         }
     ]);
 
-    app.controller('EditCardCtrl', ['$scope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
-        function($scope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
+    app.controller('EditCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
+        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
 
             Cards.get({id: $scope.card_id}).$promise.then(function(response) {
