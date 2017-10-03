@@ -32,11 +32,13 @@
             }
 
             $scope.clean_filters = function() {
+                $scope.keyword = '';
                 $rootScope.card_filter.keyword = '';
                 $rootScope.card_filter.audience = '';
                 $rootScope.card_filter.axis = '';
                 $rootScope.card_filter.status = '';
                 $rootScope.card_filter.tags = [];
+                $scope.get_cards();
             }
 
             $scope.card_image = function(card) {
@@ -54,7 +56,7 @@
                 if (arr.length < 3)
                     return arr;
                 var new_row = [];
-                for (let i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                     new_row[i] = arr[safe_mod(i + start, arr.length)];
                 return new_row;
             }
