@@ -31,6 +31,14 @@
                 $rootScope.card_filter.tags = [];
             }
 
+            $scope.clean_filters = function() {
+                $rootScope.card_filter.keyword = '';
+                $rootScope.card_filter.audience = '';
+                $rootScope.card_filter.axis = '';
+                $rootScope.card_filter.status = '';
+                $rootScope.card_filter.tags = [];
+            }
+
             $scope.card_image = function(card) {
                 if (card.image_gallery.length > 0)
                     return card.image_gallery[0].image;
