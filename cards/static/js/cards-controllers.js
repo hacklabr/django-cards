@@ -175,6 +175,34 @@
                 }
             }
 
+            function start_rootscope() {
+                $rootScope.card_filter = {};
+                $rootScope.card_filter.keyword = '';
+                $rootScope.card_filter.audience = '';
+                $rootScope.card_filter.axis = '';
+                $rootScope.card_filter.status = '';
+                $rootScope.card_filter.tags = [];
+            }
+
+            $scope.filter_by_audience = function(audience) {
+                if (!$rootScope.card_filter)
+                    start_rootscope();
+                $rootScope.card_filter.audience = audience;
+                window.location.replace('#!/');
+            };
+            $scope.filter_by_axis = function(axis) {
+                if (!$rootScope.card_filter)
+                    start_rootscope();
+                $rootScope.card_filter.axis = axis;
+                window.location.replace('#!/');
+            };
+            $scope.filter_by_tag = function(tag) {
+                if (!$rootScope.card_filter)
+                    start_rootscope();
+                $rootScope.card_filter.tags.push({name: tag});
+                window.location.replace('#!/');
+            };
+
             $scope.delete_card = function() {
                 if (window.confirm('Deseja mesmo excluir essa prática?')) {
                     if ($scope.card.editable) {
