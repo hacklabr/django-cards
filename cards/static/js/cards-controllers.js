@@ -350,14 +350,8 @@
                 }
             };
             function remove_image(index) {
-                if (window.confirm('Deseja mesmo excluir essa imagem?')) {
-                    Images.delete({id: $scope.slides[index].data.id}).$promise.then(function() {
-                        $scope.slides.splice(index, 1);
-                    }).catch(function(error) {
-                        $scope.error_messages.push('Não foi possível excluir a imagem.');
-                        console.error(error);
-                    });
-                }
+                if (window.confirm('Deseja mesmo excluir essa imagem?'))
+                    return Images.delete({id: $scope.slides[index].data.id}).$promise;
             }
 
             /* Videos */
@@ -385,14 +379,8 @@
                 });
             };
             function remove_video(index) {
-                if (window.confirm('Deseja mesmo excluir esse vídeo?')) {
-                    YouTubeEmbeds.delete({id: $scope.slides[index].data.id}).$promise.then(function() {
-                        $scope.slides.splice(index, 1);
-                    }).catch(function(error) {
-                        $scope.error_messages.push('Não foi possível remover o vídeo.');
-                        console.error(error);
-                    });
-                }
+                if (window.confirm('Deseja mesmo excluir esse vídeo?'))
+                    return YouTubeEmbeds.delete({id: $scope.slides[index].data.id}).$promise;
             };
 
             /* Media - Generic */
@@ -402,13 +390,17 @@
                 $scope.slide_mode = $scope.mode.SHOW_MEDIA;
             };
             $scope.remove_media = function(index) {
-                var old_length = $scope.slides.length;
-                if ($scope.slides[index].type == 'image')
-                    remove_image(index);
-                else if ($scope.slides[index].type == 'video')
-                    remove_video(index);
-
-                if ($scope.slides.length == old_length) { /* Media was successfully removed. */
+                var media_type, promise;
+                if ($scope.slides[index].type == 'image') {
+                    media_type = 'image';
+                    promise = remove_image(index);
+                }
+                else if ($scope.slides[index].type == 'video') {
+                    media_type = 'video';
+                    promise = remove_video(index);
+                }
+                promise.then(function() { /* Media was successfully removed. */
+                    $scope.slides.splice(index, 1);
                     if ($scope.slides.length == index) { /* We removed the last-index slide */
                         if (index == 0) { /* No more slides remaining */
                             $scope.slide_mode = $scope.mode.ADD_MEDIA;
@@ -423,7 +415,13 @@
                         $scope.selected_slide_index = index;
                         $scope.selected_slide = $scope.slides[index];
                     }
-                }
+                }, function(error) { /* Media removal failed. */
+                    if (media_type == 'image')
+                        $scope.error_messages.push('Não foi possível excluir a imagem.');
+                    else if (media_type == 'video')
+                        $scope.error_messages.push('Não foi possível excluir o vídeo.');
+                    console.error(error);
+                });
             };
             $scope.is_selected_media = function(index) {
                 if ($scope.selected_slide_index == index)
@@ -609,14 +607,8 @@
                 }
             };
             function remove_image(index) {
-                if (window.confirm('Deseja mesmo excluir essa imagem?')) {
-                    Images.delete({id: $scope.slides[index].data.id}).$promise.then(function() {
-                        $scope.slides.splice(index, 1);
-                    }).catch(function(error) {
-                        $scope.error_messages.push('Não foi possível excluir a imagem.');
-                        console.error(error);
-                    });
-                }
+                if (window.confirm('Deseja mesmo excluir essa imagem?'))
+                    return Images.delete({id: $scope.slides[index].data.id}).$promise;
             }
 
             /* Videos */
@@ -644,14 +636,8 @@
                 });
             };
             function remove_video(index) {
-                if (window.confirm('Deseja mesmo excluir esse vídeo?')) {
-                    YouTubeEmbeds.delete({id: $scope.slides[index].data.id}).$promise.then(function() {
-                        $scope.slides.splice(index, 1);
-                    }).catch(function(error) {
-                        $scope.error_messages.push('Não foi possível remover o vídeo.');
-                        console.error(error);
-                    });
-                }
+                if (window.confirm('Deseja mesmo excluir esse vídeo?'))
+                    return YouTubeEmbeds.delete({id: $scope.slides[index].data.id}).$promise;
             };
 
             /* Media - Generic */
@@ -661,13 +647,17 @@
                 $scope.slide_mode = $scope.mode.SHOW_MEDIA;
             };
             $scope.remove_media = function(index) {
-                var old_length = $scope.slides.length;
-                if ($scope.slides[index].type == 'image')
-                    remove_image(index);
-                else if ($scope.slides[index].type == 'video')
-                    remove_video(index);
-
-                if ($scope.slides.length == old_length) { /* Media was successfully removed. */
+                var media_type, promise;
+                if ($scope.slides[index].type == 'image') {
+                    media_type = 'image';
+                    promise = remove_image(index);
+                }
+                else if ($scope.slides[index].type == 'video') {
+                    media_type = 'video';
+                    promise = remove_video(index);
+                }
+                promise.then(function() { /* Media was successfully removed. */
+                    $scope.slides.splice(index, 1);
                     if ($scope.slides.length == index) { /* We removed the last-index slide */
                         if (index == 0) { /* No more slides remaining */
                             $scope.slide_mode = $scope.mode.ADD_MEDIA;
@@ -682,7 +672,13 @@
                         $scope.selected_slide_index = index;
                         $scope.selected_slide = $scope.slides[index];
                     }
-                }
+                }, function(error) { /* Media removal failed. */
+                    if (media_type == 'image')
+                        $scope.error_messages.push('Não foi possível excluir a imagem.');
+                    else if (media_type == 'video')
+                        $scope.error_messages.push('Não foi possível excluir o vídeo.');
+                    console.error(error);
+                });
             };
             $scope.is_selected_media = function(index) {
                 if ($scope.selected_slide_index == index)
