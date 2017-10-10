@@ -498,6 +498,7 @@
             $scope.audiences = Audiences.query();
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
+            $scope.tinymceOptions = TinymceOptions;
 
             $scope.new_tag = function(new_tag) {
                 if (new_tag.length <= 12) {
