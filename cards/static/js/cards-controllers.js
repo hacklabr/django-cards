@@ -485,6 +485,7 @@
             $scope.audiences = Audiences.query();
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
+            $scope.tinymceOptions = TinymceOptions;
 
             $scope.tinymceOptions = TinymceOptions;
 
