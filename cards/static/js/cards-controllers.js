@@ -137,6 +137,12 @@
                     name: new_tag.toLowerCase()
                 };
             };
+            $scope.tag_exists = function(new_tag) {
+                for (var tag of $scope.tags)
+                    if (tag.name == new_tag)
+                        return true;
+                return false;
+            }
             $scope.insert_tag = function(tag) {
                 if (tag !== '' && $rootScope.card_filter.tags.indexOf(tag) == -1) {
                     $rootScope.card_filter.tags.push({name: tag.toLowerCase()});
