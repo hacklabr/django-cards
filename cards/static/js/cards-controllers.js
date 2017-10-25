@@ -138,8 +138,8 @@
                 };
             };
             $scope.tag_exists = function(new_tag) {
-                for (var tag of $scope.tags)
-                    if (tag.name == new_tag)
+                for (var i = 0; i < $scope.tags.length; i++)
+                    if ($scope.tags[i].name == new_tag)
                         return true;
                 return false;
             }
@@ -270,8 +270,8 @@
                 }
             };
             $scope.tag_exists = function(new_tag) {
-                for (var tag of $scope.tags)
-                    if (tag.name == new_tag)
+                for (var i = 0; i < $scope.tags.length; i++)
+                    if ($scope.tags[i].name == new_tag)
                         return true;
                 return false;
             }
@@ -506,6 +506,8 @@
             $scope.tags = Tags.query();
             $scope.tinymceOptions = TinymceOptions;
 
+            $scope.tinymceOptions = TinymceOptions;
+
             $scope.new_tag = function(new_tag) {
                 if (new_tag.length <= 12) {
                     return {
@@ -517,8 +519,8 @@
                 }
             };
             $scope.tag_exists = function(new_tag) {
-                for (var tag of $scope.tags)
-                    if (tag.name == new_tag)
+                for (var i = 0; i < $scope.tags.length; i++)
+                    if ($scope.tags[i].name == new_tag)
                         return true;
                 return false;
             }

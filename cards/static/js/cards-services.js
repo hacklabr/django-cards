@@ -10,7 +10,7 @@
     app.factory('Axes', ['$resource', function($resource){
         return $resource('/cards/api/axis/:id',
             {'id': '@id'});
-    }]);    
+    }]);
 
     app.factory('Cards', ['$resource', function($resource){
         return $resource('/cards/api/cards/:id',
@@ -48,7 +48,17 @@
 
     app.factory('TinymceOptions', function(){
         return {
-            toolbar: 'bold italic | bullist numlist | quicklink link fullscreen | removeformat'
+            toolbar: 'bold italic | bullist numlist | quicklink link fullscreen | removeformat',
+            plugins: 'advlist lists autolink link image media autoresize paste',
+            paste_as_text: true,
+            formats: {
+                removeformat: [
+                    {selector: 'b,strong,em,i,font,u,strike', remove : 'all', split : true, expand : false, block_expand: true, deep : true},
+                    {selector: 'h1,h2,h3,h4,h5,h6', remove : 'all', split : true, expand : false, block_expand: false, deep : true},
+                    {selector: 'span', attributes : ['style', 'class'], remove : 'empty', split : true, expand : false, deep : true},
+                    {selector: '*', attributes : ['style', 'class'], split : false, expand : false, deep : true}
+                  ]
+            }
         }
     });
 
