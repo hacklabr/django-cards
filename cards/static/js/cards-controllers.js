@@ -117,32 +117,7 @@
                 });
             };
 
-            /* Tags - old */
-            // $scope.tag = '';
-            // $scope.insert_tag = function(tag) {
-            //     if (tag !== '' && $rootScope.card_filter.tags.indexOf(tag) == -1) {
-            //         $rootScope.card_filter.tags.push(tag.toLowerCase());
-            //         $scope.get_cards();
-            //     }
-            //     $scope.tag = '';
-            // };
-            // $scope.remove_tag = function(index) {
-            //     $rootScope.card_filter.tags.splice(index, 1);
-            //     $scope.get_cards();
-            // };
-
             /* Tags */
-            $scope.new_tag = function(new_tag) {
-                return {
-                    name: new_tag.toLowerCase()
-                };
-            };
-            $scope.tag_exists = function(new_tag) {
-                for (var i = 0; i < $scope.tags.length; i++)
-                    if ($scope.tags[i].name == new_tag)
-                        return true;
-                return false;
-            }
             $scope.insert_tag = function(tag) {
                 if (tag !== '' && $rootScope.card_filter.tags.indexOf(tag) == -1) {
                     $rootScope.card_filter.tags.push({name: tag.toLowerCase()});
