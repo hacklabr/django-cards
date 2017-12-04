@@ -30,6 +30,9 @@
                 $rootScope.card_filter.status = '';
                 $rootScope.card_filter.tags = [];
             }
+            else {
+                $scope.keyword = $rootScope.card_filter.keyword;
+            }
 
             $scope.clean_filters = function() {
                 $scope.keyword = '';
