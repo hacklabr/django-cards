@@ -71,7 +71,7 @@ class CardViewSet(viewsets.ModelViewSet):
         # Certified cards are available for everyone
         queryset = Card.objects.filter(is_certified=True)
         # NON certified cards are only available for users in the same Contract
-        galera = get_user_model().objects.filter(groups__contracts__groups__in=self.request.user.groups.all())
+        galera = get_user_model().objects.filter(groups__contract__groups__in=self.request.user.groups.all())
         queryset2 = Card.objects.filter(author__in=galera, is_certified = False)
         # If user is not in any groups, this queryset will get all the cards user made
         queryset3 = Card.objects.filter(author=self.request.user)
