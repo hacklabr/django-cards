@@ -2,8 +2,9 @@
     'use strict';
     var app = angular.module('cards.controllers', ['ngCookies']);
 
-    app.controller('CardsListCtrl', ['$scope', '$rootScope', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
-        function($scope, $rootScope, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
+    app.controller('CardsListCtrl', ['$filter', '$scope', '$rootScope', '$http', 'Audiences', 'Axes', 'Cards', 'Likes', 'Tags', 'YouTubeEmbeds',
+        function($filter, $scope, $rootScope, $http, Audiences, Axes, Cards, Likes, Tags, YouTubeEmbeds) {
+            var encode = $filter('encode');
 
             /* Services bindings */
             $scope.audiences = Audiences.query();
@@ -102,11 +103,13 @@
                     $rootScope.card_filter.axis === '' &&
                     $rootScope.card_filter.status === '' &&
                     $rootScope.card_filter.tags.length === 0;
+                var keyword = encode($rootScope.card_filter.keyword)
+                                .replace(/;/g, '%3B');
                 Cards.query({
                     audience__name: $rootScope.card_filter.audience,
                     axis__name: $rootScope.card_filter.axis,
                     is_certified: $rootScope.card_filter.status,
-                    search: $rootScope.card_filter.keyword,
+                    search: keyword,
                     tags__name: $rootScope.card_filter.tags.map(function(tag) {
                         return tag.name;
                     })

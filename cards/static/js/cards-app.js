@@ -5,6 +5,7 @@
         'cards.controllers',
         'cards.directives',
         'cards.services',
+        'filters.htmlentities',
         'ngFileUpload',
         'ngRoute',
         'ngSanitize',

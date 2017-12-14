@@ -1,15 +1,14 @@
 # coding=utf-8
 from django.shortcuts import render
 from rest_framework import viewsets, filters, permissions
-from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from .models import Audience, Authors, Axis, Card, Image, Like, YoutubeEmbed
-from .serializers import AudienceSerializer, AuthorsSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
+from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
+from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from .permissions import IsUserOrReadAndCreate, InAdminGroupOrCreatorOrReadAndCreate
-
+from .filters import CardsSearchFilter
 
 class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
 
@@ -35,17 +34,21 @@ class CardViewSet(viewsets.ModelViewSet):
     model = Card
     serializer_class = CardSerializer
 
-    filter_backends = ( filters.DjangoFilterBackend, filters.SearchFilter)
+    filter_backends = ( filters.DjangoFilterBackend, CardsSearchFilter)
     filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name')
     permission_classes = (permissions.IsAuthenticated,)
 
-    search_fields = (
-                     'development',
-                     'hint',
-                     'know_more',
-                     'text',
-                     'title',
-                     'you_will_need')
+    search_fields = [
+        'development',
+        'hint',
+        'know_more',
+        'text',
+        'title',
+        'you_will_need',
+        'lead',
+        'author__first_name',
+        'author__last_name'
+    ]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
