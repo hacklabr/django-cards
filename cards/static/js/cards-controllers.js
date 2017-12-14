@@ -21,7 +21,7 @@
                 });
             });
 
-            $scope.show_filter_options = false;
+            $scope.show_filter_options = true;
             $scope.keyword = '';
             if (!$rootScope.card_filter) {
                 $rootScope.card_filter = {};
