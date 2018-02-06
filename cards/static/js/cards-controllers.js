@@ -221,8 +221,8 @@
         }
     ]);
 
-    app.controller('NewCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
-        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
+    app.controller('NewCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'YouTubeEmbeds',
+        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, YouTubeEmbeds) {
             $scope.card = {is_certified: false};
             $scope.card.audience = {};
             $scope.card.axis = {};
@@ -235,8 +235,6 @@
             $scope.audiences = Audiences.query();
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
-
-            $scope.tinymceOptions = TinymceOptions;
 
             $scope.proxy = {};
             $scope.proxy.tags = [];
@@ -437,8 +435,8 @@
         }
     ]);
 
-    app.controller('EditCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'TinymceOptions', 'YouTubeEmbeds',
-        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, TinymceOptions, YouTubeEmbeds) {
+    app.controller('EditCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'YouTubeEmbeds',
+        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
             $scope.slides = [];
 
@@ -485,9 +483,6 @@
             $scope.audiences = Audiences.query();
             $scope.axes = Axes.query();
             $scope.tags = Tags.query();
-            $scope.tinymceOptions = TinymceOptions;
-
-            $scope.tinymceOptions = TinymceOptions;
 
             $scope.new_tag = function(new_tag) {
                 if (new_tag.length <= 12) {
