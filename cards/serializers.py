@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function
-from rest_framework import serializers
 from django.conf import settings
-from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
-# from drf_writable_nested import WritableNestedModelSerializer
 
 from accounts.serializers import TimtecUserSerializer
+from rest_framework import serializers
+
+from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
 
 
 class BaseUserSerializer(TimtecUserSerializer):

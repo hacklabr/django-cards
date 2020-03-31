@@ -1,4 +1,3 @@
-# coding=utf-8
 from django.shortcuts import render
 from rest_framework import viewsets, filters, permissions
 from rest_framework.exceptions import PermissionDenied
@@ -9,6 +8,9 @@ from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, Lik
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+
+import django_filters.rest_framework
+
 from .permissions import IsUserOrReadAndCreate, InAdminGroupOrCreatorOrReadAndCreate
 from .filters import CardsSearchFilter
 
@@ -36,7 +38,7 @@ class CardViewSet(viewsets.ModelViewSet):
     model = Card
     serializer_class = CardSerializer
 
-    filter_backends = ( filters.DjangoFilterBackend, CardsSearchFilter)
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend, CardsSearchFilter)
     filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name')
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = LimitOffsetPagination

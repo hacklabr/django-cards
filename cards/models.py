@@ -13,7 +13,7 @@ class Audience(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.name)
 
 
@@ -22,7 +22,7 @@ class Authors(models.Model):
     author_description = models.TextField(_('Author Description'), blank=True)
     card = models.ForeignKey('Card', related_name='authors', on_delete=models.SET_NULL, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.card:
             title = self.card.title
         else:
@@ -39,14 +39,14 @@ class Axis(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.name)
 
 
 class Card(models.Model):
-    audience = models.ForeignKey('Audience')  # , blank=True, null=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), blank=True, null=True)
-    axis = models.ForeignKey('Axis')  # , blank=True, null=True)
+    audience = models.ForeignKey('Audience', on_delete=models.SET_NULL, blank=True, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), on_delete=models.SET_NULL, blank=True, null=True)
+    axis = models.ForeignKey('Axis', on_delete=models.SET_NULL, blank=True, null=True)
     development = models.TextField(verbose_name=_('Development'), blank=True)
     hint = models.TextField(verbose_name=_('Hints'), blank=True)
     is_certified = models.BooleanField(verbose_name=_('Card was certified'), default=False)
@@ -57,7 +57,7 @@ class Card(models.Model):
     title = models.CharField(verbose_name=_('Title'), max_length=255)
     you_will_need = models.TextField(verbose_name=_('Requirements for this'), blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s' % (self.title)
 
     class Meta:
@@ -71,18 +71,25 @@ class Image(models.Model):
     image = models.ImageField(upload_to='cards_images/')
     description = models.TextField(_('Description'), blank=True)
     card = models.ForeignKey('Card', related_name='image_gallery', on_delete=models.SET_NULL, blank=True, null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('User'), blank=True, null=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('User'),
+        on_delete=models.SET_NULL,
+        related_name='cards_images',
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ['id']
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{} - Card {} - User {}'.format(self.image, self.card, self.user)
 
 
 class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    card = models.ForeignKey(Card)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
 

@@ -15,6 +15,8 @@ router.register(r'images', views.ImageViewSet, base_name='image')
 router.register(r'youtube_embeds', views.YoutubeEmbedViewSet, base_name='youtube_embeds')
 router.register(r'likes', views.LikeViewSet, base_name='likes')
 
+app_name = 'cards'
+
 urlpatterns = (
     url(r'^$', views.cards_view, name='cards_page'),
     url(r'^edit/$', views.card_edit_view, name='cards_edit_page'),
