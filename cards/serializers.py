@@ -1,13 +1,16 @@
+
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
-from accounts.serializers import TimtecUserSerializer
 from rest_framework import serializers
 
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
 
 
-class BaseUserSerializer(TimtecUserSerializer):
-    pass
+class BaseUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        exclude = ('password',)
 
 
 class AudienceSerializer(serializers.ModelSerializer):
