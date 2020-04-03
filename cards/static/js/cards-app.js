@@ -12,7 +12,7 @@
         'ui.bootstrap',
         'ui.select',
         'ui.tinymce',
-        'header',
+        'shared',
     ]);
 
     app.config(['$locationProvider', '$routeProvider',
