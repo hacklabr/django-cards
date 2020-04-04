@@ -1,11 +1,30 @@
 from setuptools import setup
 
 setup(name='django-cards',
-      version='0.1',
+      version='0.1.2',
       description='Cards functionality for Django. Very specific',
       url='http://github.com/hacklabr/django-cards',
       author='Tiago Fassoni, Bruno Martin, Laury Bueno',
       author_email='tiagofassoni@gmail.com',
       license='GPLv3',
-      packages=['cards'],
-      zip_safe=False)
+      packages=[
+          'cards',
+      ],
+      include_package_data=True,
+      install_requires=[],
+      zip_safe=False,
+      keywords='django-discussion',
+      classifiers=[
+            'Development Status :: 1 - Production',
+            'Framework :: Django',
+            'Framework :: Django :: 2.2',
+            'Intended Audience :: Developers',
+            'License :: OSI Approved :: AGPLv3',
+            'Natural Language :: English',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.2',
+            'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
+      ],
+)
