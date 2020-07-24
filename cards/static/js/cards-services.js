@@ -36,6 +36,27 @@
         return img_file;
     }]);
 
+    app.factory('CardFile', ['$resource', 'Upload', function($resource, Upload){
+        var card_file = $resource('/discussion/api/card-file/:id',
+           {'id' : '@id'},
+           {
+               'update': {'method': 'PUT'},
+               'patch': {'method': 'PATCH'}
+           });
+
+       card_file.upload = function(file) {
+           return Upload.upload({
+               url: '/discussion/api/card-file',
+               data: {
+                   name: file.name,
+                   file: file
+               },
+               arrayKey: '',
+           });
+       };
+       return card_file;
+   }]);
+
     app.factory('Likes', ['$resource', function($resource){
         return $resource('/cards/api/likes/:id',
             {'id': '@id'});
