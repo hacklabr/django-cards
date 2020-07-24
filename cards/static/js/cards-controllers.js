@@ -340,7 +340,6 @@
             }
 
             /* Files */
-            console.log('oieeeee')
             $scope.uploadCardFiles = function (file, card) {
 
                 if (file) {
