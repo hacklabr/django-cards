@@ -256,6 +256,13 @@ class CardSerializer(serializers.ModelSerializer):
             for image in image_gallery:
                 instance.image_gallery.add(Image.objects.get(id=image['id']))
 
+        if instance.files:
+            instance.files.clear()
+        if 'files' in self.initial_data.keys():
+            files = self.initial_data.pop('files')
+            for one_file in files:
+                instance.files.add(CardFile.objects.get(id=one_file['id']))
+
         instance.tags.clear()
         if 'tags' in self.initial_data.keys():
             tags = self.initial_data.pop('tags')

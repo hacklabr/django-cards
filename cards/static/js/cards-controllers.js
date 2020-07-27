@@ -456,8 +456,8 @@
         }
     ]);
 
-    app.controller('EditCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'Likes', 'Tags', 'YouTubeEmbeds',
-        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, Likes, Tags, YouTubeEmbeds) {
+    app.controller('EditCardCtrl', ['$scope', '$rootScope', '$routeParams', '$http', '$sce', 'Audiences', 'Axes', 'Cards', 'Images', 'CardFile', 'Likes', 'Tags', 'YouTubeEmbeds',
+        function($scope, $rootScope, $routeParams, $http, $sce, Audiences, Axes, Cards, Images, CardFile, Likes, Tags, YouTubeEmbeds) {
             $scope.card_id = $routeParams.cardId;
             $scope.slides = [];
 
@@ -616,6 +616,27 @@
                 if (window.confirm('Deseja mesmo excluir essa imagem?'))
                     return Images.delete({id: $scope.slides[index].data.id}).$promise;
             }
+
+            /* Files */
+            $scope.uploadCardFiles = function (file, card) {
+
+                if (file) {
+                    CardFile.upload(file).then(function (response) {
+                        var card_file = new CardFile(response.data);
+
+                        if (card.files === undefined)
+                            card.files = [];
+                        card.files.push(card_file);
+                        return {location: card_file.file};
+                    }, function (response) {
+                        if (response.status > 0) {
+                            $scope.errorMsg = response.status + ': ' + response.data;
+                        }
+                    }, function (evt) {
+                        card.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                    });
+                }
+            };
 
             /* Videos */
             $scope.embed_video = function() {
