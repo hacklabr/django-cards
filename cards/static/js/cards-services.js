@@ -37,7 +37,7 @@
     }]);
 
     app.factory('CardFile', ['$resource', 'Upload', function($resource, Upload){
-        var card_file = $resource('/discussion/api/card-file/:id',
+        var card_file = $resource('/cards/api/card-file/:id',
            {'id' : '@id'},
            {
                'update': {'method': 'PUT'},
@@ -46,7 +46,7 @@
 
        card_file.upload = function(file) {
            return Upload.upload({
-               url: '/discussion/api/card-file',
+               url: '/cards/api/card-file',
                data: {
                    name: file.name,
                    file: file

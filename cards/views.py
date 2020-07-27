@@ -2,9 +2,10 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters, permissions
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 
-from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed
-from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer
+from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed, CardFile
+from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, LikeSerializer, ImageSerializer, TagsInCardsSerializer, YoutubeEmbedSerializer, CardFileSerializer
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -103,6 +104,12 @@ class ImageViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class CardFileViewSet(viewsets.ModelViewSet):
+    queryset = CardFile.objects.all()
+    serializer_class = CardFileSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class LikeViewSet(viewsets.ModelViewSet):

@@ -87,6 +87,29 @@ class Image(models.Model):
         return u'{} - Card {} - User {}'.format(self.image, self.card, self.user)
 
 
+class CardFile(models.Model):
+    name = models.CharField(_('Name'), max_length=255, null=True, blank=True)
+    card = models.ForeignKey('Card', models.CASCADE, related_name='files', null=True, blank=True)
+    file = models.FileField(upload_to='cards_files/')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('User'),
+        on_delete=models.SET_NULL,
+        related_name='cards_files',
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        ordering = ['id']
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return u'{} - Card {} - User {}'.format(self.file, self.card, self.user)
+
+
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE)

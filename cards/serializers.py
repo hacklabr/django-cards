@@ -4,7 +4,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image
+from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image, CardFile
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
@@ -40,6 +40,13 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ('id', 'image', 'description', 'user')
 
 
+class CardFileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CardFile
+        fields = '__all__'
+
+
 class LikeSerializer(serializers.ModelSerializer):
 
     user = BaseUserSerializer(read_only=True)
@@ -72,6 +79,7 @@ class CardSerializer(serializers.ModelSerializer):
     certifiable = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
     image_gallery = serializers.SerializerMethodField()
+    files = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     user_liked = serializers.SerializerMethodField()
@@ -113,6 +121,9 @@ class CardSerializer(serializers.ModelSerializer):
     def get_image_gallery(self, obj):
         return ImageSerializer(instance=obj.image_gallery,  allow_null=True, required=False, many=True, **{'context': self.context}).data
 
+    def get_files(self, obj):
+        return CardFileSerializer(instance=obj.files,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+
     def get_likes(self, obj):
         return obj.like_set.count()
 
@@ -141,6 +152,7 @@ class CardSerializer(serializers.ModelSerializer):
                   'editable',
                   'hint',
                   'image_gallery',
+                  'files',
                   'is_certified',
                   'know_more',
                   'likes',
@@ -182,6 +194,11 @@ class CardSerializer(serializers.ModelSerializer):
             for image in image_gallery:
                 card.image_gallery.add(Image.objects.get(id=image['id']))
                 # Image.objects.get(id=image['id']).card = card
+
+        if 'files' in self.initial_data.keys():
+            files = self.initial_data.pop('files')
+            for one_file in files:
+                card.files.add(CardFile.objects.get(id=one_file['id']))
 
         if 'tags' in self.initial_data.keys():
             tags = self.initial_data.pop('tags')
