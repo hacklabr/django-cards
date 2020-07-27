@@ -44,7 +44,7 @@
                'patch': {'method': 'PATCH'}
            });
 
-       card_file.upload = function(file) {
+        card_file.upload = function(file) {
            return Upload.upload({
                url: '/cards/api/card-file',
                data: {
@@ -53,8 +53,8 @@
                },
                arrayKey: '',
            });
-       };
-       return card_file;
+        };
+        return card_file;
    }]);
 
     app.factory('Likes', ['$resource', function($resource){
