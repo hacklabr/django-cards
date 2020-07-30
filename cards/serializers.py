@@ -10,7 +10,7 @@ from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image, Ca
 class BaseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        exclude = ('password',)
+        fields = ('id', 'image', 'name', 'email')
 
 
 class AudienceSerializer(serializers.ModelSerializer):
@@ -71,6 +71,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
 
 
 class CardSerializer(serializers.ModelSerializer):
+    # TODO refactor this like there is no tomorow.
 
     audience = serializers.SerializerMethodField()
     author = BaseUserSerializer(read_only=True)
@@ -162,7 +163,10 @@ class CardSerializer(serializers.ModelSerializer):
                   'title',
                   'user_liked',
                   'youtube_embeds',
-                  'you_will_need')
+                  'you_will_need',
+                  'groups',
+                  'is_public'
+                  )
 
     def create(self, validated_data):
         card = Card(**validated_data)

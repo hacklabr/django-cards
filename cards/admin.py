@@ -17,6 +17,13 @@ class CardAdmin(admin.ModelAdmin):
         ImageInline,
         YoutubeEmbedInline
     ]
+    autocomplete_fields = [
+        'groups',
+    ]
+    list_filter = [
+        'groups',
+        'is_public',
+    ]
 
 admin.site.register(Authors)
 admin.site.register(Audience)

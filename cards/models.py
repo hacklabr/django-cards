@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import models
+from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 
@@ -56,6 +57,16 @@ class Card(models.Model):
     text = models.TextField(verbose_name=_('Text'), blank=True)
     title = models.CharField(verbose_name=_('Title'), max_length=255)
     you_will_need = models.TextField(verbose_name=_('Requirements for this'), blank=True)
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('Groups'),
+        related_name='cards',
+        blank=True,
+    )
+    is_public = models.BooleanField(
+        _('Public'),
+        default=False,
+    )
 
     def __str__(self):
         return u'%s' % (self.title)

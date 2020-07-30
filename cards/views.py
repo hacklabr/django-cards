@@ -9,6 +9,7 @@ from .serializers import AudienceSerializer, AxisSerializer, CardSerializer, Lik
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Q
 
 import django_filters.rest_framework
 
@@ -37,13 +38,13 @@ class AxisViewSet(viewsets.ReadOnlyModelViewSet):
 class CardViewSet(viewsets.ModelViewSet):
 
     model = Card
+    queryset = Card.objects.all()
     serializer_class = CardSerializer
 
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend, CardsSearchFilter)
-    filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name')
+    filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name', 'groups')
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = LimitOffsetPagination
-
     search_fields = [
         'development',
         'hint',
@@ -77,19 +78,32 @@ class CardViewSet(viewsets.ModelViewSet):
             raise PermissionDenied(detail=_('you do not have permission to alter this card'))
 
     def get_queryset(self):
-        # Certified cards are available for everyone
-        queryset = Card.objects.filter(is_certified=True)
-        # NON certified cards are only available for users in the same Contract
-        galera = get_user_model().objects.filter(groups__contract__groups__in=self.request.user.groups.all())
-        queryset2 = Card.objects.filter(author__in=galera, is_certified = False)
-        # If user is not in any groups, this queryset will get all the cards user made
-        queryset3 = Card.objects.filter(author=self.request.user)
-        # If user is in one of the admin groups, he can see everything. EVERYTHING.
-        if bool(set(settings.DJANGO_CARDS_ADMIN_GROUPS) & set(g.name for g in self.request.user.groups.all())):
-            omniscient_queryset = Card.objects.all()
-            return omniscient_queryset
+        queryset = super().get_queryset()
 
-        return queryset | queryset2 | queryset3
+        if bool(set(settings.DJANGO_CARDS_ADMIN_GROUPS) & set(g.name for g in self.request.user.groups.all())):
+            return queryset
+
+        # if not self.request.user.is_superuser:
+        #     queryset = queryset.filter(
+        #     # Certified cards are available for everyone
+        #         Q(is_certified=True)
+        #         | Q(is_public=True)
+        #         # NON certified cards are only available for users in the group
+        #         | Q(groups__in=self.request.user.groups.all())
+        #         | Q(author=self.request.user)
+        #         # | Q(groups__workspace__groups__in=self.request.user.groups.all())
+        #     )
+
+        queryset = queryset.select_related(
+            'audience',
+            'author',
+            'axis',
+        )
+        queryset = queryset.prefetch_related(
+            'groups',
+        )
+
+        return queryset.distinct()
 
 
 class ImageViewSet(viewsets.ModelViewSet):
