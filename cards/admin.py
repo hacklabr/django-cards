@@ -7,6 +7,7 @@ class AuthorsInline(admin.TabularInline):
 
 class ImageInline(admin.TabularInline):
     model = Image
+    exclude = ('user',)
 
 class YoutubeEmbedInline(admin.TabularInline):
     model = YoutubeEmbed
@@ -18,6 +19,7 @@ class CardAdmin(admin.ModelAdmin):
         YoutubeEmbedInline
     ]
     autocomplete_fields = [
+        'author',
         'groups',
     ]
     list_filter = [
