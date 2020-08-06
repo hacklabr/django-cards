@@ -169,7 +169,13 @@ class CardSerializer(serializers.ModelSerializer):
                   )
 
     def create(self, validated_data):
+
+        if 'groups' in self.initial_data.keys():
+            groups = validated_data.pop('groups')
+
         card = Card(**validated_data)
+        card.save()
+        card.groups.add(*groups)
 
         if 'axis' in self.initial_data.keys():
             axis = self.initial_data.pop('axis')
