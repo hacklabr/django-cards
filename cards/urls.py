@@ -28,7 +28,7 @@ urlpatterns = (
     url(r'^edit/$', views.card_edit_view, name='cards_edit_page'),
     
     url(r'^detail/$', views.card_detail_view, name='cards_detail'),
-    url(r'^card-detail.template.html', TemplateView.as_view(template_name="cards-detail.html")),
+    url(r'^card-detail.template.html', TemplateView.as_view(template_name="card-detail.html")),
 
     # Legacy templates, dont use then anymore
     url(r'^$', views.cards_view, name='cards_page'),
