@@ -33,7 +33,7 @@
                     controller: 'CardDetailCtrl'
                 }).
                 when('/', {
-                    templateUrl: 'cards/cards-list.template.html',
+                    templateUrl: '/cards/cards-list.template.html',
                     controller: 'CardsListCtrl'
                 }).
                 otherwise('/');
