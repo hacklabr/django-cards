@@ -7,6 +7,7 @@
             controller: CardsListController,
             bindings: {
                 group: '<',
+                enableAddCardButton: '<',
             },
         });
 
