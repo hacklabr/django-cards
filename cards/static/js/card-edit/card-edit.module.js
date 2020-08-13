@@ -3,6 +3,7 @@
 
     angular.module('cardEdit', [
         'cards.services',
+        'ngSanitize',
     ]);
 
 })();
