@@ -21,10 +21,10 @@
         'Audiences',
         'Axes',
         'Tags',
-        'Images'
+        'CardFile',
     ];
 
-    function CardsDetailController ($scope, $rootScope, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, Images) {
+    function CardsDetailController ($scope, $rootScope, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile) {
 
         var ctrl = this;
 
@@ -129,11 +129,11 @@
               $scope.slides = [];
               $scope.error_messages = [];
               $scope.editing_mode = false;
-  
+
               $scope.audiences = Audiences.query();
               $scope.axes = Axes.query();
               $scope.tags = Tags.query();
-  
+
               $scope.proxy = {};
               $scope.proxy.tags = [];
               $scope.new_tag = function(new_tag) {
@@ -151,7 +151,7 @@
                   if ($scope.tags[i].name == new_tag) return true;
                 return false;
               };
-  
+
               $scope.card.authors = [];
               $scope.add_author = function () {
                 $scope.card.authors.push({
@@ -159,7 +159,7 @@
                   author_description: "",
                 });
               };
-  
+
               /* Slider */
               $scope.mode = {
                 ADD_MEDIA: 0,
@@ -173,7 +173,7 @@
                 $scope.slide_mode = $scope.mode.ADD_MEDIA;
                 $scope.dirty_slide = true;
               };
-  
+
               function valid_card() {
                 $scope.error_messages = [];
                 if (!$scope.card.title || $scope.card.title == "")
@@ -192,7 +192,7 @@
                   $scope.error_messages.push("Formato é campo obrigatório!");
                 return $scope.error_messages.length == 0;
               }
-  
+
               $scope.create_card = function () {
                 if (valid_card()) {
                   $scope.card.image_gallery = $scope.slides
@@ -212,9 +212,9 @@
                   $scope.card.tags = $scope.proxy.tags.map(function (tag) {
                     return tag.name;
                   });
-  
+
                   $scope.card.groups = [$rootScope.currentClassroom.group.id,]
-  
+
                   Cards.update($scope.card).$promise.then(function (response) {
                       $scope.unsaved_content = false;
                       $uibModalInstance.close(response)
@@ -227,7 +227,7 @@
                     });
                 }
               };
-  
+
               /* Images */
               $scope.upload_image = function (file) {
                 if (file) {
@@ -261,14 +261,14 @@
                   return Images.delete({ id: $scope.slides[index].data.id })
                     .$promise;
               }
-  
+
               /* Files */
               $scope.uploadCardFiles = function (file, card) {
                 if (file) {
                   CardFile.upload(file).then(
                     function (response) {
                       var card_file = new CardFile(response.data);
-  
+
                       if (card.files === undefined) card.files = [];
                       card.files.push(card_file);
                       return { location: card_file.file };
@@ -287,7 +287,7 @@
                   );
                 }
               };
-  
+
               /* Videos */
               $scope.embed_video = function () {
                 var youtube_pattern = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -323,7 +323,7 @@
                     id: $scope.slides[index].data.id,
                   }).$promise;
               }
-  
+
               /* Media - Generic */
               $scope.select_media = function (index) {
                 $scope.selected_slide_index = index;
@@ -377,7 +377,7 @@
                 if ($scope.selected_slide_index == index) return "btn-primary";
                 return "btn-default";
               };
-  
+
               $scope.safe_url = function (url) {
                 return $sce.trustAsResourceUrl(url);
               };
