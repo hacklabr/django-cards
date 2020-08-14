@@ -121,9 +121,7 @@
             $uibModalInstance,
             Images
           ) => {
-            console.log($scope)
             $scope.card = $rootScope.card
-            console.log($rootScope)
                 $scope.cancel = function () {
                     $uibModalInstance.dismiss();
                 };
@@ -218,7 +216,12 @@
 
                   Cards.update($scope.card).$promise.then(function (response) {
                       $scope.unsaved_content = false;
-                      $uibModalInstance.close(response)
+
+                      // Re-run parent's onInit to update its data
+                      ctrl.$onInit();
+
+                      // Close edit modal
+                      $uibModalInstance.close(response);
                     })
                     .catch(function (error) {
                       $scope.error_messages.push(
