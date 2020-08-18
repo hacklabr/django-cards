@@ -13,6 +13,7 @@
     CardsDetailController.$inject = [
         '$scope',
         '$rootScope',
+        '$state',
         '$stateParams',
         '$sce',
         '$uibModal',
@@ -24,7 +25,7 @@
         'CardFile',
     ];
 
-    function CardsDetailController ($scope, $rootScope, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile) {
+    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile) {
 
         var ctrl = this;
 
@@ -89,7 +90,7 @@
             if (window.confirm('Deseja mesmo excluir essa prática?')) {
                 if ($scope.card.editable) {
                     Cards.delete({id: $scope.card.id}).$promise.then(function(response) {
-                        window.location.replace('#!/');
+                        $state.go('classroom');
                     }).catch(function(error) {
                         $scope.error_messages.push('Não foi possível excluir a prática.');
                         console.error(error);
@@ -120,9 +121,7 @@
             $uibModalInstance,
             Images
           ) => {
-            console.log($scope)
             $scope.card = $rootScope.card
-            console.log($rootScope)
                 $scope.cancel = function () {
                     $uibModalInstance.dismiss();
                 };
@@ -217,7 +216,12 @@
 
                   Cards.update($scope.card).$promise.then(function (response) {
                       $scope.unsaved_content = false;
-                      $uibModalInstance.close(response)
+
+                      // Re-run parent's onInit to update its data
+                      ctrl.$onInit();
+
+                      // Close edit modal
+                      $uibModalInstance.close(response);
                     })
                     .catch(function (error) {
                       $scope.error_messages.push(
