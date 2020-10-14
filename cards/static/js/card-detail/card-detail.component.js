@@ -121,10 +121,9 @@
             $uibModalInstance,
             Images
           ) => {
-            $scope.card = $rootScope.card
-                $scope.cancel = function () {
-                    $uibModalInstance.dismiss();
-                };
+              $scope.card = $rootScope.card
+              $scope.backupCard = angular.copy($rootScope.card)
+
               $scope.slides = [];
               $scope.error_messages = [];
               $scope.editing_mode = false;
@@ -135,6 +134,13 @@
 
               $scope.proxy = {};
               $scope.proxy.tags = [];
+
+              $scope.cancel = function () {
+                  $scope.card = $scope.backupCard
+                  $uibModalInstance.dismiss();
+                  ctrl.$onInit();
+              };
+
               $scope.new_tag = function(new_tag) {
                   if (new_tag.length <= 12) {
                       return {
@@ -377,6 +383,7 @@
                   }
                 );
               };
+
               $scope.is_selected_media = function (index) {
                 if ($scope.selected_slide_index == index) return "btn-primary";
                 return "btn-default";
@@ -385,6 +392,10 @@
               $scope.safe_url = function (url) {
                 return $sce.trustAsResourceUrl(url);
               };
+
+              $uibModalInstance.result.finally(function(){
+                $scope.cancel();
+              });
           };
 
         /* Slider*/
