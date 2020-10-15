@@ -131,11 +131,8 @@
               var video_slides = $scope.card.youtube_embeds.map(function(video) {
                   return {type: 'video', el: video};
               });
-              //$scope.slides = image_slides.concat(video_slides);
 
               var images_len = image_slides.length;
-
-              //$scope.last_image = images_len;
 
               for (var i = 0; i < images_len; i++) {
                 $scope.slides.push({
@@ -191,8 +188,17 @@
                 ADD_VIDEO: 2,
                 SHOW_MEDIA: 3,
               };
-              $scope.slide_mode = $scope.mode.ADD_MEDIA;
-              $scope.dirty_slide = true;
+
+              if ($scope.slides.length) {
+                $scope.slide_mode = $scope.mode.SHOW_MEDIA;
+                $scope.dirty_slide = false;
+                $scope.selected_slide_index = 0;
+                $scope.selected_slide = $scope.slides[0];
+              } else {
+                $scope.slide_mode = $scope.mode.ADD_MEDIA;
+                $scope.dirty_slide = true;
+              }
+
               $scope.new_slide = function () {
                 $scope.slide_mode = $scope.mode.ADD_MEDIA;
                 $scope.dirty_slide = true;
@@ -274,8 +280,8 @@
                       $scope.selected_slide_index = last_image + 1;
                       $scope.selected_slide =
                         $scope.slides[$scope.selected_slide_index];
-                      $scope.slide_mode = $scope.mode.SHOW_MEDIA;
                       $scope.dirty_slide = false;
+                      $scope.slide_mode = $scope.mode.SHOW_MEDIA;
                     })
                     .catch(function (error) {
                       $scope.error_messages.push(
