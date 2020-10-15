@@ -125,6 +125,25 @@
               $scope.backupCard = angular.copy($rootScope.card)
 
               $scope.slides = [];
+              var image_slides = $scope.card.image_gallery.map(function(img) {
+                  return {type: 'image', el: img};
+              });
+              var video_slides = $scope.card.youtube_embeds.map(function(video) {
+                  return {type: 'video', el: video};
+              });
+              //$scope.slides = image_slides.concat(video_slides);
+
+              var images_len = image_slides.length;
+
+              //$scope.last_image = images_len;
+
+              for (var i = 0; i < images_len; i++) {
+                $scope.slides.push({
+                  type: "image",
+                  data: image_slides[i].el,
+                });
+              }
+              
               $scope.error_messages = [];
               $scope.editing_mode = false;
 
@@ -178,7 +197,7 @@
                 $scope.slide_mode = $scope.mode.ADD_MEDIA;
                 $scope.dirty_slide = true;
               };
-
+ 
               function valid_card() {
                 $scope.error_messages = [];
                 if (!$scope.card.title || $scope.card.title == "")
