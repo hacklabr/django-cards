@@ -199,7 +199,8 @@
                 $scope.dirty_slide = true;
               }
 
-              $scope.new_slide = function () {
+              $scope.new_slide = function (index) {
+                $scope.selected_slide_index = $scope.slides.length + 1;
                 $scope.slide_mode = $scope.mode.ADD_MEDIA;
                 $scope.dirty_slide = true;
               };
@@ -340,7 +341,7 @@
                     });
                     $scope.selected_slide_index = $scope.slides.length - 1;
                     $scope.selected_slide =
-                      $scope.slides[$scope.selected_slide_index];
+                    $scope.slides[$scope.selected_slide_index];
                     $scope.slide_mode = $scope.mode.SHOW_MEDIA;
                     $scope.dirty_slide = false;
                     $scope.video_url = "";
@@ -410,7 +411,11 @@
               };
 
               $scope.is_selected_media = function (index) {
-                if ($scope.selected_slide_index == index) return "btn-primary";
+                let slides_len = $scope.slides.length;
+                if (($scope.selected_slide_index == index) ||
+                    ($scope.mode.ADD_MEDIA && slides_len == index - 1)) {
+                    return "btn-primary";
+                }
                 return "btn-default";
               };
 
