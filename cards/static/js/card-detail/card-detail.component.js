@@ -128,9 +128,6 @@
               var image_slides = $scope.card.image_gallery.map(function(img) {
                   return {type: 'image', el: img};
               });
-              var video_slides = $scope.card.youtube_embeds.map(function(video) {
-                  return {type: 'video', el: video};
-              });
 
               var images_len = image_slides.length;
 
@@ -152,9 +149,9 @@
               $scope.proxy.tags = [];
 
               $scope.cancel = function () {
-                  $scope.card = $scope.backupCard
-                  $uibModalInstance.dismiss();
-                  ctrl.$onInit();
+                $scope.card = $scope.backupCard
+                $uibModalInstance.dismiss();
+                ctrl.$onInit();
               };
 
               $scope.new_tag = function(new_tag) {
@@ -366,6 +363,7 @@
                 $scope.selected_slide = $scope.slides[index];
                 $scope.slide_mode = $scope.mode.SHOW_MEDIA;
               };
+
               $scope.remove_media = function (index) {
                 var media_type, promise;
                 if ($scope.slides[index].type == "image") {
@@ -411,9 +409,8 @@
               };
 
               $scope.is_selected_media = function (index) {
-                let slides_len = $scope.slides.length;
                 if (($scope.selected_slide_index == index) ||
-                    ($scope.mode.ADD_MEDIA && slides_len == index - 1)) {
+                    ($scope.mode.ADD_MEDIA && $scope.slides.length == index - 1)) {
                     return "btn-primary";
                 }
                 return "btn-default";
