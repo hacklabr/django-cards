@@ -121,11 +121,23 @@
             $uibModalInstance,
             Images
           ) => {
-            $scope.card = $rootScope.card
-                $scope.cancel = function () {
-                    $uibModalInstance.dismiss();
-                };
+              $scope.card = $rootScope.card
+              $scope.backupCard = angular.copy($rootScope.card)
+
               $scope.slides = [];
+              var image_slides = $scope.card.image_gallery.map(function(img) {
+                  return {type: 'image', el: img};
+              });
+
+              var images_len = image_slides.length;
+
+              for (var i = 0; i < images_len; i++) {
+                $scope.slides.push({
+                  type: "image",
+                  data: image_slides[i].el,
+                });
+              }
+              
               $scope.error_messages = [];
               $scope.editing_mode = false;
 
@@ -135,6 +147,13 @@
 
               $scope.proxy = {};
               $scope.proxy.tags = [];
+
+              $scope.cancel = function () {
+                $scope.card = $scope.backupCard
+                $uibModalInstance.dismiss();
+                ctrl.$onInit();
+              };
+
               $scope.new_tag = function(new_tag) {
                   if (new_tag.length <= 12) {
                       return {
@@ -166,13 +185,23 @@
                 ADD_VIDEO: 2,
                 SHOW_MEDIA: 3,
               };
-              $scope.slide_mode = $scope.mode.ADD_MEDIA;
-              $scope.dirty_slide = true;
-              $scope.new_slide = function () {
+
+              if ($scope.slides.length) {
+                $scope.slide_mode = $scope.mode.SHOW_MEDIA;
+                $scope.dirty_slide = false;
+                $scope.selected_slide_index = 0;
+                $scope.selected_slide = $scope.slides[0];
+              } else {
+                $scope.slide_mode = $scope.mode.ADD_MEDIA;
+                $scope.dirty_slide = true;
+              }
+
+              $scope.new_slide = function (index) {
+                $scope.selected_slide_index = $scope.slides.length + 1;
                 $scope.slide_mode = $scope.mode.ADD_MEDIA;
                 $scope.dirty_slide = true;
               };
-
+ 
               function valid_card() {
                 $scope.error_messages = [];
                 if (!$scope.card.title || $scope.card.title == "")
@@ -249,8 +278,8 @@
                       $scope.selected_slide_index = last_image + 1;
                       $scope.selected_slide =
                         $scope.slides[$scope.selected_slide_index];
-                      $scope.slide_mode = $scope.mode.SHOW_MEDIA;
                       $scope.dirty_slide = false;
+                      $scope.slide_mode = $scope.mode.SHOW_MEDIA;
                     })
                     .catch(function (error) {
                       $scope.error_messages.push(
@@ -309,7 +338,7 @@
                     });
                     $scope.selected_slide_index = $scope.slides.length - 1;
                     $scope.selected_slide =
-                      $scope.slides[$scope.selected_slide_index];
+                    $scope.slides[$scope.selected_slide_index];
                     $scope.slide_mode = $scope.mode.SHOW_MEDIA;
                     $scope.dirty_slide = false;
                     $scope.video_url = "";
@@ -334,6 +363,7 @@
                 $scope.selected_slide = $scope.slides[index];
                 $scope.slide_mode = $scope.mode.SHOW_MEDIA;
               };
+
               $scope.remove_media = function (index) {
                 var media_type, promise;
                 if ($scope.slides[index].type == "image") {
@@ -377,14 +407,22 @@
                   }
                 );
               };
+
               $scope.is_selected_media = function (index) {
-                if ($scope.selected_slide_index == index) return "btn-primary";
+                if (($scope.selected_slide_index == index) ||
+                    ($scope.mode.ADD_MEDIA && $scope.slides.length == index - 1)) {
+                    return "btn-primary";
+                }
                 return "btn-default";
               };
 
               $scope.safe_url = function (url) {
                 return $sce.trustAsResourceUrl(url);
               };
+
+              $uibModalInstance.result.finally(function(){
+                $scope.cancel();
+              });
           };
 
         /* Slider*/
