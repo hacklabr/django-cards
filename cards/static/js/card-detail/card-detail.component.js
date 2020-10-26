@@ -23,9 +23,10 @@
         'Axes',
         'Tags',
         'CardFile',
+        'YouTubeEmbeds',
     ];
 
-    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile) {
+    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile, YouTubeEmbeds) {
 
         var ctrl = this;
 
@@ -108,6 +109,7 @@
                     "$rootScope",
                     "$uibModalInstance",
                     "Images",
+                    "YouTubeEmbeds",
                     CardEditModalInstanceController,
                 ],
             });
@@ -119,7 +121,8 @@
             $scope,
             $rootScope,
             $uibModalInstance,
-            Images
+            Images,
+            YouTubeEmbeds
           ) => {
               $scope.card = $rootScope.card
               $scope.backupCard = angular.copy($rootScope.card)
@@ -128,16 +131,23 @@
               var image_slides = $scope.card.image_gallery.map(function(img) {
                   return {type: 'image', el: img};
               });
+              var video_slides = $scope.card.youtube_embeds.map(function(video) {
+                  return {type: 'video', el: video};
+              });
 
-              var images_len = image_slides.length;
-
-              for (var i = 0; i < images_len; i++) {
+              for (var i = 0; i < image_slides.length; i++) {
                 $scope.slides.push({
                   type: "image",
                   data: image_slides[i].el,
                 });
               }
-              
+              for (var i = 0; i < video_slides.length; i++) {
+                $scope.slides.push({
+                  type: "video",
+                  data: video_slides[i].el,
+                });
+              }
+
               $scope.error_messages = [];
               $scope.editing_mode = false;
 
