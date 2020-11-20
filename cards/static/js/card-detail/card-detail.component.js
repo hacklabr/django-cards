@@ -24,9 +24,16 @@
         'Tags',
         'CardFile',
         'YouTubeEmbeds',
+        'UserActions',
     ];
 
-    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile, YouTubeEmbeds) {
+    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile, YouTubeEmbeds, UserActions) {
+
+        (new UserActions({
+          verb: "access",
+          action_object_id: $stateParams.cardId,
+          action_object_type: "Card",
+        })).$save();
 
         var ctrl = this;
 
