@@ -33,6 +33,8 @@
           verb: "access",
           action_object_id: $stateParams.cardId,
           action_object_type: "Card",
+          target_id: $rootScope.currentClassroom.id, 
+          target_type: "Classroom"
         })).$save();
 
         var ctrl = this;
