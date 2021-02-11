@@ -65,6 +65,13 @@
                     $scope.card.user_liked = response.id;
                     $scope.card.likes += 1;
                 });
+                (new UserActions({
+                  verb: "reacted",
+                  action_object_id: $stateParams.cardId,
+                  action_object_type: "Card",
+                  target_id: $stateParams.classroomId,
+                  target_type: "Classroom"
+                })).$save();
             }
         }
 
