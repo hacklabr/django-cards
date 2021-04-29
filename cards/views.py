@@ -68,7 +68,8 @@ class CardViewSet(viewsets.ModelViewSet):
         """
         obj = self.get_object()
         # I'm converting both lists to sets and asking if their intersection is non-empty
-        if bool(set([g.name for g in self.request.user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)):
+        if bool(set([g.name for g in self.request.user.groups.all()]) & set(settings.DJANGO_CARDS_ADMIN_GROUPS)) or \
+           self.request.user.is_superuser:
             # Although Card is being modified, original user remains
             serializer.save(author=obj.author)
         elif not obj.is_certified:

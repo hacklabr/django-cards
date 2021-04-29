@@ -175,7 +175,7 @@ class CardSerializer(serializers.ModelSerializer):
 
         card = Card(**validated_data)
         card.save()
-        card.groups.add(*groups)
+        #card.groups.add(*groups)
 
         if 'axis' in self.initial_data.keys():
             axis = self.initial_data.pop('axis')
