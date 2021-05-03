@@ -1,10 +1,11 @@
-
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
 from rest_framework import serializers
 
 from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image, CardFile
+
+from modeltranslation.utils import fallbacks
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
@@ -116,7 +117,10 @@ class CardSerializer(serializers.ModelSerializer):
         return AuthorsSerializer(instance=obj.authors,  allow_null=True, required=False, many=True, **{'context': self.context}).data
 
     def get_image_gallery(self, obj):
-        return ImageSerializer(instance=obj.image_gallery,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+        with fallbacks(False):
+            images = ImageSerializer(instance=obj.image_gallery,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+            images = [image for image in images if image['image'] != None]
+            return images
 
     def get_files(self, obj):
         return CardFileSerializer(instance=obj.files,  allow_null=True, required=False, many=True, **{'context': self.context}).data
@@ -255,8 +259,8 @@ class CardSerializer(serializers.ModelSerializer):
                                     )
                 # instance.authors.add(Authors.objects.get(id=authors['id']))
 
-        if instance.image_gallery:
-            instance.image_gallery.clear()
+        #if instance.image_gallery:
+        #    instance.image_gallery.clear()
         if 'image_gallery' in self.initial_data.keys():
             image_gallery = self.initial_data.pop('image_gallery')
             for image in image_gallery:
