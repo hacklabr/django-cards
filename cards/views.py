@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, filters, permissions
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Audience, Axis, Card, Image, Like, YoutubeEmbed, CardFile
@@ -35,6 +35,10 @@ class AxisViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AxisSerializer
 
 
+class CardsPagination(PageNumberPagination):
+    page_size = 50
+
+
 class CardViewSet(viewsets.ModelViewSet):
 
     model = Card
@@ -44,7 +48,7 @@ class CardViewSet(viewsets.ModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend, CardsSearchFilter)
     filter_fields = ('audience__name', 'axis__name', 'is_certified', 'tags__name', 'groups')
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = LimitOffsetPagination
+    pagination_class = CardsPagination
     search_fields = [
         'development',
         'hint',
