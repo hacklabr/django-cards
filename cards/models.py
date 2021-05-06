@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
 
 
 class Audience(models.Model):
@@ -44,6 +45,10 @@ class Axis(models.Model):
         return u'%s' % (self.name)
 
 
+class CardTag(TaggedItemBase):
+    content_object = models.ForeignKey('Card', on_delete=models.CASCADE)
+
+
 class Card(models.Model):
     audience = models.ForeignKey('Audience', on_delete=models.SET_NULL, blank=True, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('Author'), on_delete=models.SET_NULL, blank=True, null=True)
@@ -53,7 +58,7 @@ class Card(models.Model):
     is_certified = models.BooleanField(verbose_name=_('Card was certified'), default=False)
     know_more = models.TextField(verbose_name=_('Know More About'), blank=True)
     lead = models.CharField(verbose_name=_('Lead'), blank=True, max_length=255)
-    tags = TaggableManager(blank=True)
+    tags = TaggableManager(blank=True, through=CardTag)
     text = models.TextField(verbose_name=_('Text'), blank=True)
     title = models.CharField(verbose_name=_('Title'), max_length=255)
     you_will_need = models.TextField(verbose_name=_('Requirements for this'), blank=True)

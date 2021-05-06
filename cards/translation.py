@@ -1,6 +1,6 @@
 from modeltranslation.translator import register, TranslationOptions
 from django.db.models.fields.files import ImageFieldFile, FileField
-from .models import Card, Image, Audience, Axis, CardFile, YoutubeEmbed
+from .models import Card, Image, Audience, Axis, CardFile, YoutubeEmbed, CardTag
 
 
 @register(Card)
@@ -32,3 +32,8 @@ class AxisTranslationOptions(TranslationOptions):
 @register(YoutubeEmbed)
 class YoutubeEmbedTranslationOptions(TranslationOptions):
     fields = ('video_id',)
+
+
+@register(CardTag)
+class CardTagTranslationOptions(TranslationOptions):
+    fields = ('tag',)
