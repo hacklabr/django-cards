@@ -85,18 +85,18 @@ class CardViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        if bool(set(settings.DJANGO_CARDS_ADMIN_GROUPS) & set(g.name for g in self.request.user.groups.all())):
-            return queryset
+        #if bool(set(settings.DJANGO_CARDS_ADMIN_GROUPS) & set(g.name for g in self.request.user.groups.all())):
+        #    return queryset
 
-        if not self.request.user.is_superuser:
-            queryset = queryset.filter(
-            # Certified cards are available for everyone
-                Q(is_certified=True)
-                | Q(is_public=True)
-                # NON certified cards are only available for users in the group
-                | Q(groups__in=self.request.user.groups.all())
-                | Q(author=self.request.user)
-            )
+        #if not self.request.user.is_superuser:
+        #    queryset = queryset.filter(
+        #    # Certified cards are available for everyone
+        #        Q(is_certified=True)
+        #        | Q(is_public=True)
+        #        # NON certified cards are only available for users in the group
+        #        | Q(groups__in=self.request.user.groups.all())
+        #        | Q(author=self.request.user)
+        #    )
 
         queryset = queryset.select_related(
             'audience',
