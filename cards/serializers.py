@@ -123,7 +123,10 @@ class CardSerializer(serializers.ModelSerializer):
             return images
 
     def get_files(self, obj):
-        return CardFileSerializer(instance=obj.files,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+        with fallbacks(False):
+            files = CardFileSerializer(instance=obj.files,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+            files = [f for f in files if f['file'] != None]
+            return files
 
     def get_likes(self, obj):
         return obj.like_set.count()
@@ -139,7 +142,10 @@ class CardSerializer(serializers.ModelSerializer):
             return None
 
     def get_youtube_embeds(self, obj):
-        return YoutubeEmbedSerializer(instance=obj.youtube_embeds,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+        with fallbacks(False):
+            youtube_embeds = YoutubeEmbedSerializer(instance=obj.youtube_embeds,  allow_null=True, required=False, many=True, **{'context': self.context}).data
+            youtube_embeds = [ye for ye in youtube_embeds if ye['video_id'] != '']
+            return youtube_embeds
 
     class Meta:
         model = Card
@@ -266,20 +272,20 @@ class CardSerializer(serializers.ModelSerializer):
             for image in image_gallery:
                 instance.image_gallery.add(Image.objects.get(id=image['id']))
 
-        if instance.files:
-            instance.files.clear()
+        #if instance.files:
+        #    instance.files.clear()
         if 'files' in self.initial_data.keys():
             files = self.initial_data.pop('files')
             for one_file in files:
                 instance.files.add(CardFile.objects.get(id=one_file['id']))
 
-        instance.tags.clear()
+        #instance.tags.clear()
         if 'tags' in self.initial_data.keys():
             tags = self.initial_data.pop('tags')
             instance.tags.add(*tags)
 
-        if instance.youtube_embeds:
-            instance.youtube_embeds.clear()
+        #if instance.youtube_embeds:
+        #    instance.youtube_embeds.clear()
         if 'youtube_embeds' in self.initial_data.keys():
             youtube_embeds = self.initial_data.pop('youtube_embeds')
             for embed in youtube_embeds:
