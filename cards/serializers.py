@@ -183,15 +183,14 @@ class CardSerializer(serializers.ModelSerializer):
         card.save()
         #card.groups.add(*groups)
 
-        if 'axis' in self.initial_data.keys():
+        if 'axis' in self.initial_data.keys() and self.initial_data.get('axis'):
             axis = self.initial_data.pop('axis')
             card.axis = Axis.objects.get(id=axis['id'])
 
-        if 'audience' in self.initial_data.keys():
+        if 'audience' in self.initial_data.keys() and self.initial_data.get('audience'):
             audience = self.initial_data.pop('audience')
             card.audience = Audience.objects.get(id=audience['id'])
             # card.audience.save()
-            # raise Exception('PARATUDO')
 
         # For dwelling with images (reverse foreign key), embeds (reverse foreign key) and tags (own package), we need
         # the card object to be instantiated
@@ -243,11 +242,11 @@ class CardSerializer(serializers.ModelSerializer):
         instance.you_will_need = self.initial_data.get('you_will_need', '')
 
         # Clean current fields and repopulate if they need to be changed
-        if 'axis' in self.initial_data.keys():
+        if 'axis' in self.initial_data.keys() and self.initial_data.get('axis'):
             axis = self.initial_data.pop('axis')
             instance.axis = Axis.objects.get(id=axis['id'])
 
-        if 'audience' in self.initial_data.keys():
+        if 'audience' in self.initial_data.keys() and self.initial_data.get('audience'):
             audience = self.initial_data['audience']
             instance.audience = Audience.objects.get(id=audience['id'])
 
