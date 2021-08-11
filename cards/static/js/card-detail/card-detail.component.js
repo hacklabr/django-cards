@@ -25,9 +25,9 @@
         'CardFile',
         'YouTubeEmbeds',
         'UserActions',
+        'gettextCatalog'
     ];
-
-    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile, YouTubeEmbeds, UserActions) {
+    function CardsDetailController ($scope, $rootScope, $state, $stateParams, $sce, $uibModal, Cards, Likes, Audiences, Axes, Tags, CardFile, YouTubeEmbeds, UserActions, gettextCatalog) {
 
         (new UserActions({
           verb: "access",
@@ -104,12 +104,14 @@
         };
 
         $scope.delete_card = function() {
-            if (window.confirm('Deseja mesmo excluir essa prática?')) {
+            let text = gettextCatalog.getString('Do you want to exclude this card?');
+            if (window.confirm(text)) {
                 if ($scope.card.editable) {
                     Cards.delete({id: $scope.card.id}).$promise.then(function(response) {
-                        $state.go('classroom');
+                        $state.go('cardsList');
                     }).catch(function(error) {
-                        $scope.error_messages.push('Não foi possível excluir a prática.');
+                        let text = gettextCatalog.getString('Unable to delete card.');
+                        $scope.error_messages.push(text);
                         console.error(error);
                     });
                 }
@@ -187,7 +189,8 @@
                       };
                   }
                   else {
-                      window.alert('Não é permitido inserir tag com mais de 12 caracteres.');
+                      window.alert(gettextCatalog.getString(
+                        'It is not allowed to insert a tag with more than 12 characters.'));
                   }
               };
               $scope.tag_exists = function (new_tag) {
@@ -231,19 +234,22 @@
               function valid_card() {
                 $scope.error_messages = [];
                 if (!$scope.card.title || $scope.card.title == "")
-                  $scope.error_messages.push("Título é campo obrigatório!");
+                  $scope.error_messages.push(gettextCatalog.getString(
+                    "Title is required field!"));
                 if (
                   !$scope.card.audience ||
                   !$scope.card.audience.id ||
                   $scope.card.audience.id == ""
                 )
-                  $scope.error_messages.push("Tema é campo obrigatório!");
+                  $scope.error_messages.push(gettextCatalog.getString(
+                    "Theme is required field!"));
                 if (
                   !$scope.card.axis ||
                   !$scope.card.axis.id ||
                   $scope.card.axis.id == ""
                 )
-                  $scope.error_messages.push("Formato é campo obrigatório!");
+                  $scope.error_messages.push(gettextCatalog.getString(
+                    "Format is mandatory field!"));
                 return $scope.error_messages.length == 0;
               }
 
@@ -280,7 +286,9 @@
                     })
                     .catch(function (error) {
                       $scope.error_messages.push(
-                        "Não foi possível criar o conteúdo."
+                        gettextCatalog.getString(
+                          "Unable to create content."
+                        )
                       );
                       console.error(error);
                     });
@@ -309,16 +317,20 @@
                     })
                     .catch(function (error) {
                       $scope.error_messages.push(
-                        "Não foi possível salvar a imagem."
+                        gettextCatalog.getString(
+                          "Unable to save image"
+                        )
                       );
                       console.error(error);
                     });
                 }
               };
               function remove_image(index) {
-                if (window.confirm("Deseja mesmo excluir essa imagem?"))
+                if (window.confirm(
+                  gettextCatalog.getString("Do you really want to delete this image?"))){
                   return Images.delete({ id: $scope.slides[index].data.id })
                     .$promise;
+                  }
               }
 
               /* Files */
@@ -371,13 +383,15 @@
                   })
                   .catch(function (error) {
                     $scope.error_messages.push(
-                      "Não foi possível salvar o vídeo."
+                      gettextCatalog.getString(
+                        "Could not save video."
+                      )
                     );
                     console.error(error);
                   });
               };
               function remove_video(index) {
-                if (window.confirm("Deseja mesmo excluir esse vídeo?"))
+                if (window.confirm(gettextCatalog.getString("Do you really want to delete this video?")))
                   return YouTubeEmbeds.delete({
                     id: $scope.slides[index].data.id,
                   }).$promise;
@@ -423,11 +437,13 @@
                     /* Media removal failed. */
                     if (media_type == "image")
                       $scope.error_messages.push(
-                        "Não foi possível excluir a imagem."
+                        gettextCatalog.getString(
+                          "Could not delete image.")
                       );
                     else if (media_type == "video")
                       $scope.error_messages.push(
-                        "Não foi possível excluir o vídeo."
+                        gettextCatalog.getString(
+                          "Unable to delete the video.")
                       );
                     console.error(error);
                   }
