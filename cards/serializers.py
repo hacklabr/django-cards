@@ -280,8 +280,12 @@ class CardSerializer(serializers.ModelSerializer):
 
         #instance.tags.clear()
         if 'tags' in self.initial_data.keys():
-            tags = self.initial_data.pop('tags')
-            instance.tags.add(*tags)
+            new_tags = self.initial_data.pop('tags')
+            current_tags = [tag.name for tag in instance.tags.all()]
+            tags_diff = list(set(current_tags) - set(new_tags))
+
+            instance.tags.remove(*tags_diff)
+            instance.tags.add(*new_tags)
 
         #if instance.youtube_embeds:
         #    instance.youtube_embeds.clear()
