@@ -16,11 +16,29 @@ import django_filters.rest_framework
 from .permissions import IsUserOrReadAndCreate, InAdminGroupOrCreatorOrReadAndCreate
 from .filters import CardsSearchFilter
 
-class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
+class AudienceViewSet(viewsets.ModelViewSet):
 
     model = Audience
     queryset = Audience.objects.all()
     serializer_class = AudienceSerializer
+
+
+class AudiencesPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
+
+class AudiencesPageViewSet(AudienceViewSet):
+    pagination_class = AudiencesPagination
+
+    def get_queryset(self):
+        queryset = super(AudiencesPageViewSet, self).get_queryset()
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(Q(name__icontains=search))
+
+        return queryset
 
 # class AuthorsViewSet(viewsets.ModelViewSet):
 #     model = Authors
@@ -28,11 +46,29 @@ class AudienceViewSet(viewsets.ReadOnlyModelViewSet):
 #     serializer_class = AuthorsSerializer
 
 
-class AxisViewSet(viewsets.ReadOnlyModelViewSet):
+class AxisViewSet(viewsets.ModelViewSet):
 
     model = Axis
     queryset = Axis.objects.all()
     serializer_class = AxisSerializer
+
+
+class AxesPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
+
+class AxesPageViewSet(AxisViewSet):
+    pagination_class = AxesPagination
+
+    def get_queryset(self):
+        queryset = super(AxesPageViewSet, self).get_queryset()
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(Q(name__icontains=search))
+
+        return queryset
 
 
 class CardsPagination(PageNumberPagination):
