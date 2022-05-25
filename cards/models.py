@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import Group
@@ -16,7 +15,7 @@ class Audience(models.Model):
     description = models.TextField(_('Description'), blank=True)
 
     def __str__(self):
-        return u'%s' % (self.name)
+        return self.name
 
 
 class Authors(models.Model):
@@ -42,7 +41,7 @@ class Axis(models.Model):
     description = models.TextField(_('Description'), blank=True)
 
     def __str__(self):
-        return u'%s' % (self.name)
+        return self.name
 
 
 class CardTag(TaggedItemBase):
