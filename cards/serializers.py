@@ -38,7 +38,13 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ('id', 'image', 'description', 'user')
+        fields = (
+            'id',
+            'image',
+            'description',
+            'user',
+            'card_slide_index',
+        )
 
 
 class CardFileSerializer(serializers.ModelSerializer):
@@ -68,7 +74,11 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = YoutubeEmbed
-        fields =('id', 'video_id')
+        fields =(
+            'id',
+            'video_id',
+            'card_slide_index',
+        )
 
 
 class CardSerializer(serializers.ModelSerializer):

@@ -94,6 +94,11 @@ class Image(models.Model):
         blank=True,
         null=True,
     )
+    card_slide_index = models.IntegerField(
+        _('Card slide index'),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ['id']
@@ -113,6 +118,11 @@ class CardFile(models.Model):
         related_name='cards_files',
         blank=True,
         null=True,
+    )
+    card_slide_index = models.IntegerField(
+        _('Card slide index'),
+        null=True,
+        blank=True,
     )
 
     class Meta:
