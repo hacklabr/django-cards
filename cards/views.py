@@ -16,6 +16,7 @@ import django_filters.rest_framework
 from .permissions import IsUserOrReadAndCreate, InAdminGroupOrCreatorOrReadAndCreate
 from .filters import CardsSearchFilter
 
+
 class AudienceViewSet(viewsets.ModelViewSet):
 
     model = Audience

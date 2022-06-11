@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
+
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 
@@ -127,9 +128,6 @@ class CardFile(models.Model):
 
     class Meta:
         ordering = ['id']
-
-    def __unicode__(self):
-        return self.name
 
     def __str__(self):
         return u'{} - Card {} - User {}'.format(self.file, self.card, self.user)
