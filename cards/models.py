@@ -142,6 +142,11 @@ class Like(models.Model):
 class YoutubeEmbed(models.Model):
     video_id = models.CharField(max_length=255)
     card = models.ForeignKey('Card', related_name='youtube_embeds', on_delete=models.SET_NULL, blank=True, null=True)
+    card_slide_index = models.IntegerField(
+        _('Card slide index'),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ['id']
