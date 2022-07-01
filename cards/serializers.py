@@ -8,6 +8,27 @@ from .models import Authors, Audience, Axis, Card, Like, YoutubeEmbed, Image, Ca
 from modeltranslation.utils import fallbacks
 
 
+class TranslatableModelMixin(object):
+
+    def get_field_names(self, declared_fields, info):
+        from modeltranslation.utils import (
+            build_localized_fieldname,
+            get_translation_fields,
+        )
+        from modeltranslation.manager import (
+            get_translatable_fields_for_model,
+        )
+        fields = super().get_field_names( declared_fields, info)
+        model_translatable_fields = get_translatable_fields_for_model(self.Meta.model)
+        
+        for field in model_translatable_fields:
+            if field in fields:
+                fields += tuple(get_translation_fields(field))
+            else:
+                build_localized_fieldname.pop(field)
+        return fields
+
+
 class BaseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
@@ -81,7 +102,7 @@ class YoutubeEmbedSerializer(serializers.ModelSerializer):
         )
 
 
-class CardSerializer(serializers.ModelSerializer):
+class CardSerializer(TranslatableModelMixin, serializers.ModelSerializer):
     # TODO refactor this like there is no tomorow.
 
     audience = serializers.SerializerMethodField()
@@ -160,6 +181,8 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
         fields = ('id',
+                  'title',
+                  'text',
                   'audience',
                   'author',
                   'authors',
@@ -175,8 +198,6 @@ class CardSerializer(serializers.ModelSerializer):
                   'likes',
                   'lead',
                   'tags',
-                  'text',
-                  'title',
                   'user_liked',
                   'youtube_embeds',
                   'you_will_need',
@@ -186,7 +207,7 @@ class CardSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        if 'groups' in self.initial_data.keys():
+        if 'groups' in self.validated_data.keys():
             groups = validated_data.pop('groups')
 
         card = Card(**validated_data)
@@ -241,15 +262,36 @@ class CardSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
-        # Content fields
-        instance.development = self.initial_data.get('development', '')
-        instance.hint = self.initial_data.get('hint', '')
-        instance.is_certified = self.initial_data.get('is_certified', '')
-        instance.know_more = self.initial_data.get('know_more', '')
-        instance.lead = self.initial_data.get('lead', '')
-        instance.text = self.initial_data.get('text', '')
-        instance.title = self.initial_data.get('title', '')
-        instance.you_will_need = self.initial_data.get('you_will_need', '')
+        if 'groups' in self.validated_data.keys():
+            groups = validated_data.pop('groups')
+
+        # card = Card(**validated_data)
+        # card.save()
+        # raise_errors_on_nested_writes('update', self, validated_data)
+        from rest_framework.utils import model_meta
+        info = model_meta.get_field_info(instance)
+
+        # Simply set each attribute on the instance, and then save it.
+        # Note that unlike `.create()` we don't need to treat many-to-many
+        # relationships as being a special case. During updates we already
+        # have an instance pk for the relationships to be associated with.
+        m2m_fields = []
+        for attr, value in validated_data.items():
+            if attr in info.relations and info.relations[attr].to_many:
+                m2m_fields.append((attr, value))
+            else:
+                setattr(instance, attr, value)
+
+        instance.save()
+
+        # Note that many-to-many fields are set after updating instance.
+        # Setting m2m fields triggers signals which could potentially change
+        # updated instance and we do not want it to collide with .update()
+        for attr, value in m2m_fields:
+            field = getattr(instance, attr)
+            field.set(value)
+
+
 
         # Clean current fields and repopulate if they need to be changed
         if 'axis' in self.initial_data.keys() and self.initial_data.get('axis'):
