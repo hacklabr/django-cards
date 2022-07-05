@@ -5,8 +5,8 @@ from .models import Card, Image, Audience, Axis, CardFile, YoutubeEmbed, CardTag
 
 @register(Card)
 class CardTranslationOptions(TranslationOptions):
-    fields = ('development', 'hint', 'is_certified', 'know_more', 'lead', 'text',
-              'title', 'you_will_need', 'is_public')
+    fields = ('development', 'hint', 'know_more', 'lead', 'text',
+              'title', 'you_will_need',)
 
 
 @register(Image)
